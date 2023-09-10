@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "News";
+    bool yes = true;
+}
+
+@model NewsPage
+
+@section Scripts {
+    <script type="text/javascript">
+
+    </script>
+}
+
+<section class="holder mt-5">
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="mb-5 pe-5">
+                <div class="module-inner mb-3">
+                    <h5 class="module-title"><span class="module-title-color">Лента</span> новостей</h5>
+                 
+                </div>
+                @foreach (var news in Model.NewsSection1News)
+                {
+                    <div class="bd-highlight mb-3">
+                        <div>
+                            <a href="/news?id=@news.Id">
+                                <h6 class="headline-news_wrapper">@news.Title</h6>
+                            </a>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eleifend molestie felis nec ultrices. </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="mb-3">
+                <div class="module-inner my-5">
+                    <h3 class="text-center">@Model.News.Title</h3>
+                </div>
+
+                            <div class="preview">
+                                <div class="img">
+                                    <img class="img-thumbnail d-flex mx-auto my-3 h-100" src="@(ContentUrl.w890x534 + Model.News.GetPhotoFile())" alt="img">
+                                </div>
+
+
+                                <div class="socials small mb-3">
+                                    @foreach (var nt in Model.News.NewsThemes)
+                                    {
+                                        <a class="socials-link pe-4" href="#"><span class="socials-small">&nbsp;@nt.Theme.Name</span></a>
+                                    }
+                                   
+                                        <a class="socials-link" href="#"><span class="socials-small">&nbsp;@Model.News.Newspapers.Name</span></a>
+                                    
+                                    </div>
+                                    <p class="text">
+                                        @Html.Raw(Model.News.Text)
+                                    </p>
+
+                                </div>
+                    </div>
+                </div>
+            </div>
+
+           
+</section>
+
+
+
+
+
+
+

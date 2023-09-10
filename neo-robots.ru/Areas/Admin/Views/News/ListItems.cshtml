@@ -1,0 +1,59 @@
+﻿@model SMI.Areas.Admin.Models.NewsList
+
+@if (Model.Items.Any())
+{
+    <table class="table table-striped sites">
+        <thead>
+            <tr>
+                <th width="50">
+                    <a data-sortfield="id" data-sortorder="@Model.SortFieldForLink("id")" href="javascript:void(0);"
+                       class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("id")"></span>Id</a>
+                </th>
+                <th>
+                    <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("title")" href="javascript:void(0);"
+                       class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("title")"></span>Заголовок</a>
+                </th>
+                <th>
+                    <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("cities")" href="javascript:void(0);"
+                       class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("cities")"></span>Город</a>
+                </th>
+                <th>
+                    <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("authors")" href="javascript:void(0);"
+                       class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("authors")"></span>Автор</a>
+                </th>
+                <th>
+                    <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("themes")" href="javascript:void(0);"
+                       class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("themes")"></span>Тема</a>
+                </th>
+                <th width="50"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+            <tr data-id="@item.Id">
+                <td>@item.Id</td>
+                <td>
+                    <a href="/admin/news/edit/@item.Id">
+                        @item.Title
+                    </a>
+                </td>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="/news/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div style="float:left;width:100%;padding:40px;">
+        @("Материалы не найдены")
+    </div>
+}

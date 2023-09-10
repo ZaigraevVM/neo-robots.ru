@@ -1,0 +1,49 @@
+﻿@model NewspapersList
+
+@{
+    ViewBag.TitleAdd = "Издания | ";
+    ViewBag.LeftMenu = 3;
+}
+@section Scripts {
+    <script type="text/javascript">
+		$(function () {
+            catalogsFiltered.init({ url: "/admin/newspapers?type=ajax" });
+			catalogsFiltered.callback = function () {
+                $('.form-search a.btn.float-end').attr('href', '/admin/newspapers/create');
+			};
+
+            $("select").not(".ex").chosen({ width: "95%" });
+		})
+    </script>
+}
+<form class="form-search form-horizontal">
+    <div class="row mb-3">
+        <div class="col-5">
+            <input type="search" class="finderCatalog form-control" placeholder="Начните вводить название" value="@Model.Search" name="searchText" />
+        </div>
+
+        <div class="col-5" style="padding-left:0;">
+            @*
+            @Html.DropDownList("searchSelect", new SelectList(Model.RegionsList, "Id", "Name", "Null"))
+            *@
+        </div>
+
+        <div class="col-2" style="padding-left:0;">
+            <a href="@Url.Action("create", "newspapers", new { })" class="btn btn-success float-end">Добавить</a>
+        </div>
+    </div>
+</form>
+
+<div class="width100"></div>
+
+
+<div class="adminPager">
+    @if (Model != null && Model.Items.Count() > 0)
+    {
+        @Html.Partial("_Pager", Model.GetPager())
+    }
+</div>
+
+<div class="adminItems mt-5">
+    @Html.Partial("ListItems", Model)
+</div>

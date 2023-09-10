@@ -1,0 +1,245 @@
+﻿@using System.IO;
+@{
+    ViewBag.TitleAdd = (Model.Title == null || Model.Title.Trim() == "" ? "Создание | " : Model.Title.Trim() + " | ") + "Новости | ";
+    ViewBag.LeftMenu = 3;
+}
+
+@model NewsEdit
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+
+            var ItemEdit = {
+                Init: function () {
+                    $("select").not(".ex").chosen({ width: "100%" });
+                    $("#Text").ckeditor({});
+                }
+            };
+
+            ItemEdit.Init();
+
+        })
+    </script>
+}
+@using (Html.BeginForm("save", "news", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-sm-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/news">Новости</a></li>
+                    <li class="breadcrumb-item active">
+                        @if (Model.Id > 0)
+                        {
+                            @("Редактирование")
+                        }
+                        else
+                        {
+                            @("Создание")
+                        }
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="@Model.GetReturnTo" class="btn">Отмена</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" id="edit-item">
+
+            @Html.ValidationSummary()
+
+            @Html.HiddenFor(m => m.Id)
+
+            @Html.Hidden("ReturnTo", Model.ReturnTo)
+
+            @if (Model.EditError != null && Model.EditError != "")
+            {
+                <pre class="alert-danger">@Model.EditError</pre>
+            }
+
+            <div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-toggle="tab">Описание</a>
+                    </li>
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabphotos" class="nav-link" aria-current="page" role="tab" data-toggle="tab">Фотографии</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="tabdescription">
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.Title, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.NewsRegions, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.DropDownListFor(m => m.NewsRegions, new SelectList(Model.NewsRegions, "Id", "Name", "100"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.NewsCities, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.DropDownListFor(m => m.NewsCities, new SelectList(Model.NewsCities, "Id", "Name", "100"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.AuthorId, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.DropDownListFor(m => m.AuthorId, new SelectList(Model.Authors, "Id", "LastName", "100"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.ThemesIds, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.ListBoxFor(m => m.ThemesIds, new SelectList(Model.Themes, "Id", "Name"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.Text, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextAreaFor(m => m.Text, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.PhotoId, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.DropDownListFor(m => m.PhotoId, new SelectList(Model.Photos, "Id", "Name", "100"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.NewspapersId, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.DropDownListFor(m => m.NewspapersId, new SelectList(Model.Newspapers, "Id", "Name", "100"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.HashTagsIds, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.ListBoxFor(m => m.HashTagsIds, new SelectList(Model.HashTags, "Id", "Name"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div role="tabpanel" id="tabphotos" class="tab-pane">
+                        <fieldset style="width: 100%;">
+                            <legend>Основное изображение новости</legend>
+
+                            <input id="PhotoFile" type="hidden" value="@Model.PhotoFile" name="PhotoFile" />
+                            @{
+                                var fileName = Model?.Photo?.FileName;
+                                var visible = (fileName != null) ? "" : "display: none";
+                                var originalPath = ContentUrl.OriginalPhoto + fileName;
+                                string originalURL = Url.Content(originalPath);
+                                string controllerURL = "/admin/common/croppicture";
+                            }
+
+                        <div id="photoFiles" style="@visible" class="row">
+                            <label class="col-sm-2 control-label"><a href="@originalURL" target="_blank">Оригинал</a></label>
+                            <div class="form-group row" id="crop_image_3">
+                                <label class="col-sm-2 control-label">
+                                    <a href="#"
+                                       data-controllerurl="@controllerURL"
+                                       data-minwidth="500"
+                                       data-minheight="250"
+                                       data-aspectratio="@(((float)PhotoSizes.W1000x523.Width / (float)PhotoSizes.W1000x523.Height).ToString().Replace(",", "."))"
+                                       data-pictureid="@fileName"
+                                       data-imageurl="@originalURL"
+                                       data-imagetype="w1000x523">Редактировать</a>
+                                </label>
+                                <div class="col-sm-10">
+                                    @{
+                                        var w1000x523Path = ContentUrl.w1000x523 + fileName;
+
+                                        if (fileName != null && new FileInfo(ViewBag.WebRootPath + w1000x523Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w1000x523Path)?v=@DateTime.Now.ToString("mmssff")" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://via.placeholder.com/1000x523.png" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group row" id="crop_image_3">
+                                <label class="col-sm-2 control-label">
+                                    <a href="#"
+                                       data-controllerurl="@controllerURL"
+                                       data-minwidth="500"
+                                       data-minheight="250"
+                                       data-aspectratio="@(((float)PhotoSizes.W100x100.Width / (float)PhotoSizes.W100x100.Height).ToString().Replace(",", "."))"
+                                       data-pictureid="@fileName"
+                                       data-imageurl="@originalURL"
+                                       data-imagetype="w100x100">Редактировать</a>
+                                </label>
+                                <div class="col-sm-10">
+                                    @{
+                                        var w100x100Path = ContentUrl.w100x100 + fileName;
+
+                                        if (fileName != null && new FileInfo(ViewBag.WebRootPath + w1000x523Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w100x100Path)?v=@DateTime.Now.ToString("mmssff")" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://via.placeholder.com/100x100.png" />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                            <div class="form-group" id="original">
+                                <div class="col-sm-10">
+                                    <input type="file" name="file" />
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions mt-5 mb-3">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="@Model.GetReturnTo" class="btn">Отмена</a>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "neo-robots.ru", "neo-robots.ru\neo-robots.ru.csproj", "{3CBC2030-CB90-498E-8524-D0A6F9A506E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CBC2030-CB90-498E-8524-D0A6F9A506E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CBC2030-CB90-498E-8524-D0A6F9A506E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CBC2030-CB90-498E-8524-D0A6F9A506E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CBC2030-CB90-498E-8524-D0A6F9A506E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA009063-23DF-4369-9A70-7D4637A001B2}
+	EndGlobalSection
+EndGlobal

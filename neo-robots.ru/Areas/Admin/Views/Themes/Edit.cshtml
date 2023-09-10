@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.TitleAdd = (Model.Name == null || Model.Name.Trim() == "" ? "Создание | " : Model.Name.Trim() + " | ") + "Темы | ";
+    ViewBag.LeftMenu = 3;
+}
+
+@model ThemeEdit
+
+@section Scripts {
+    <script type="text/javascript">
+		$(function () {
+
+			var ItemEdit = {
+				Init: function () {
+                    $("select").not(".ex").chosen({ width: "100%" });
+					$("#Description").ckeditor({});
+				}
+			};
+
+			ItemEdit.Init();
+
+		})
+    </script>
+}
+@using (Html.BeginForm("save", "themes", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-sm-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Справочники</li>
+                    <li class="breadcrumb-item"><a href="/admin/themes">Темы</a></li>
+                    <li class="breadcrumb-item active">
+                        @if (Model.Id > 0)
+                        {
+                            @("Редактирование")
+                        }
+                        else
+                        {
+                            @("Создание")
+                        }
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="@Model.GetReturnTo" class="btn">Отмена</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" id="edit-item">
+
+            @Html.ValidationSummary()
+
+            @Html.HiddenFor(m => m.Id)
+
+            @Html.Hidden("ReturnTo", Model.ReturnTo)
+
+            @if (Model.EditError != null && Model.EditError != "")
+            {
+                <pre class="alert-danger">@Model.EditError</pre>
+            }
+
+            <div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-toggle="tab">Описание</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="tabdescription">
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.Name, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions mt-5 mb-3">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="@Model.GetReturnTo" class="btn">Отмена</a>
+            </div>
+        </div>
+    </div>
+}

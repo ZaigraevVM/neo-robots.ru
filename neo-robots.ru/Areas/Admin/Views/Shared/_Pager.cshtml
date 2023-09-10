@@ -1,0 +1,82 @@
+﻿@model Pager
+<div>
+    @if (Model != null)
+    {
+
+        @Html.Hidden("pagerCount", Model.PageCount)
+        @Html.Hidden("pagerIndex", Model.Index)
+        @Html.Hidden("getadd", "&SortField=" + Model.SortField + "&SortOrder=" + Model.SortOrder)
+        @if (@Model.PageCount > 1 || (@Model.PageCount == 1 && Model.PageSize > 10))
+        {
+            <nav style="float:left;" aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="@((1 == Model.Index)?"active":"") page-item">
+                        @if (1 == Model.Index)
+                        {
+                            <span class="page-link">&laquo;</span>
+                        }
+                        else
+                        {
+                            <a href="@((1 == Model.Index)?"javascript:void(0);":Model.URL+Model.PageSize+"/" + (Model.Index-1) + "/" + Model.URLGet)" class="prev page-link">&laquo;</a>
+                        }
+                    </li>
+
+                    @for (int i = 1; i <= Model.PageCount; i++)
+                    {
+                        if (i == Model.Index)
+                        {
+                            <li class="active page-item">
+                                <span class="index page-link page-link">@i</span>
+                            </li>
+                        }
+                        else if ((i > 3 && i + 3 < Model.Index) || (i - 3 > Model.Index && i < Model.PageCount - 2))
+                        {
+                            if ((Model.Index > 7 && i == 4) || (Model.Index < i && i - 4 == Model.Index))
+                            {
+                                <li class="page-item">
+                                    <span title="..." onclick="return false;" class="page-link">...</span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a href="@Model.URL@Model.PageSize/@i/@Model.URLGet" title="@i" class="page-link">@i</a>
+                            </li>
+                        }
+                    }
+
+                    <li class="@((Model.PageCount == Model.Index)?"active":"") page-item">
+                        @if (Model.PageCount == Model.Index)
+                        {
+                            <span class="page-link">&raquo;</span>
+                        }
+                        else
+                        {
+                            <a href="@(Model.URL+Model.PageSize+"/" + (Model.Index+1) + "/" + Model.URLGet)" class="next page-item page-link">&raquo;</a>
+                        }
+                    </li>
+                </ul>
+            </nav>
+
+            <div style="float:left;margin:0px 0 0 20px;">
+                <select name="PageSize" onchange="document.location = '@Model.URL'+this.value+'/1/' + '@Model.URLGet'" style="width:70px;">
+
+                    @foreach (var pagesize in new List<int>() { 10, 20, 50, 100, 200, 500 })
+                    {
+                        if (pagesize == Model.PageSize)
+                        {
+                            <option value="@pagesize" selected="selected">@pagesize</option>
+                        }
+                        else
+                        {
+                            <option value="@pagesize">@pagesize</option>
+                        }
+                    }
+
+                </select>
+            </div>
+        }
+    }
+
+</div>
