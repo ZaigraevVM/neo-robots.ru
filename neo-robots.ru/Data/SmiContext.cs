@@ -16,7 +16,7 @@ namespace SMI.Data.Entities
         public SmiContext(DbContextOptions<SmiContext> options)
             : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         public virtual DbSet<Author> Authors { get; set; }
