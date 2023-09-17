@@ -1,5 +1,4 @@
-﻿//using System.Drawing;
-using SixLabors.ImageSharp;
+﻿using System.Drawing;
 
 namespace SMI.Configuration
 {

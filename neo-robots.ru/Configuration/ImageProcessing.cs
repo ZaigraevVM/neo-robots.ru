@@ -1,14 +1,7 @@
-﻿/*
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-*/
-
+﻿using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-//using System.Drawing;
 using System.IO;
-//using System.Drawing;
+using SixLabors.ImageSharp.Processing;
 
 namespace SMI.Configuration
 {
@@ -18,53 +11,51 @@ namespace SMI.Configuration
 		public static string SaveCropPictureCentral(EditPictureModel m)
 		{
 			string fileName = m.PictureId != null && m.PictureId != "" ? m.PictureId : m.IdGuid + m.Extension;
-
+			/*
 			if (fileName != null && fileName != "")
 			{
-                using var image = Image.Load(m.WebRootPath + m.DestPathOriginal + fileName);
-                m.PictureWidth = image.Width;
-                m.PictureHeight = image.Height;
-				m.Calculate();
-				SaveCropPicture(image, m.Size(image.Size), m.Rectangle(image.Size), m.WebRootPath + m.DestPath + fileName, m.Watermark);
-                //image.Mutate(x => x.Resize(image.Width / 2, image.Height / 2));
-                //image.Save(m.WebRootPath + m.DestPath + fileName);
-
-                /*
-                Bitmap picture = new Bitmap(m.WebRootPath + m.DestPathOriginal + fileName);
-				m.PictureWidth = picture.Width;
-				m.PictureHeight = picture.Height;
-				m.Calculate();
-				SaveCropPicture(picture, m.Size(picture.Size), m.Rectangle(picture.Size), m.WebRootPath + m.DestPath + fileName, m.Watermark);
+				using (Bitmap picture = new Bitmap(m.WebRootPath + m.DestPathOriginal + fileName))
+				{
+					m.PictureWidth = picture.Width;
+					m.PictureHeight = picture.Height;
+					m.Calculate();
+					SaveCropPicture(picture, m.Size(picture.Size), m.Rectangle(picture.Size), m.WebRootPath + m.DestPath + fileName, m.Watermark);
+				}
 				return m.WebRootPath + m.DestPath + fileName;
-				*/
-            }
+			}
+			*/
 			return "";
 		}
 
 		public static string SaveCropPicture(EditPictureModel m)
 		{
-            /*
-			string fileName = m.PictureId != null && m.PictureId != "" ? m.PictureId : m.IdGuid + m.Extension;
+            string fileName = m.PictureId != null && m.PictureId != "" ? m.PictureId : m.IdGuid + m.Extension;
+            using var imageOrg = Image.Load(m.WebRootPath + m.DestPathOriginal + fileName);
+            var tt = m.Size(imageOrg.Size);
+			var ww = m.Rectangle(imageOrg.Size);
 
+
+            using var image = Image.Load("original.jpg");
+            image.Mutate(
+                x => x
+                    .Resize(image.Width / 2, image.Height / 2)
+                    .Crop(new Rectangle(m.X1, m.Y1, m.Width, m.Height)));
+            //.Crop(new Rectangle(x, y, cropWidth, cropHeight))
+            image.Save("result.jpg");
+
+            /*
 			if (fileName != null && fileName != "")
 			{
-				Bitmap picture = new Bitmap(m.WebRootPath + m.DestPathOriginal + fileName);
-				SaveCropPicture(picture, m.Size(picture.Size), m.Rectangle(picture.Size), m.WebRootPath + m.DestPath + fileName, m.Watermark);
-				WebRootPath = m.WebRootPath;
-
+				using (Bitmap picture = new Bitmap(m.WebRootPath + m.DestPathOriginal + fileName))
+				{
+					SaveCropPicture(picture, m.Size(picture.Size), m.Rectangle(picture.Size), m.WebRootPath + m.DestPath + fileName, m.Watermark);
+					WebRootPath = m.WebRootPath;
+				}
 				return m.DestPath + fileName;
 			}
 			*/
-
-            return "";			
+            return "";
 		}
-
-        public static void SaveCropPicture(Image image, Size size, Rectangle rectangle, string path, string watermark = "")
-		{
-            //image.Mutate(i => i.Resize(size.Width, size.Height).Crop(rectangle));
-            image.Mutate(i => i.Crop(rectangle).Resize(size.Width, size.Height));
-            image.Save(path);
-        }
 
         /*
 		public static void SaveCropPicture(Bitmap picture, Size size, Rectangle rectangle, string path, string watermark = "")
@@ -76,9 +67,7 @@ namespace SMI.Configuration
 					gr.SmoothingMode = SmoothingMode.HighQuality;
 					gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
 					gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
 					gr.DrawImage(picture, new Rectangle(new Point(0, 0), size), rectangle, GraphicsUnit.Pixel);
-
 				}
 
 				newPicture.MakeTransparent(Color.White);
@@ -104,5 +93,33 @@ namespace SMI.Configuration
 			}
 		}
 		*/
+
+        public static void SaveCropPictureNew(Size size, Rectangle rectangle, string path, string watermark = "")
+        {
+            using var image = Image.Load("original.jpg");
+            image.Mutate(
+				x => x
+					.Resize(image.Width / 2, image.Height / 2)
+					.Crop(new Rectangle(x, y, cropWidth, cropHeight)));
+            //.Crop(new Rectangle(x, y, cropWidth, cropHeight))
+            image.Save("result.jpg");
+
+			/*
+            using (Image image2 = Image.Load(path))
+			using (var inStream = new MemoryStream())
+			{
+                //image2.Save(inStream, );
+				using (var outStream = new MemoryStream())
+				using (var image = Image.Load(inStream, out IImageFormat format))
+				{
+					var clone = image.Clone(
+									i => i.Resize(width, height)
+										  .Crop(new Rectangle(x, y, cropWidth, cropHeight)));
+
+					clone.Save(outStream, format);
+				}
+			}
+			*/
+        }
     }
 }

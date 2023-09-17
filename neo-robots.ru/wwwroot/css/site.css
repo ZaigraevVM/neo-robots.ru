@@ -208,10 +208,11 @@ a {
         background-color: #e5e5e5;
     }
     .preview-small {
-        padding: 5px 15px 5px 5px;
+        padding: 5px;
     }
 .preview-small-border {
     border-bottom: 1px solid #d9d9d9;
+    min-height: 80px;
 }
 .preview-small img {
     width: 96px;
@@ -227,8 +228,19 @@ a {
 .headline-news_wrapper.text{
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
 }
+.preview .preview-text, .bd-highlight p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3.8rem;
+}
+
+.preview-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 2.8rem;
+}
+
 .socials-small {
     color: #858585;
     padding: 2px 0;

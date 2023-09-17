@@ -1,0 +1,6 @@
+﻿User-agent: *
+Crawl-delay: 5
+Disallow: /admin/
+Disallow: /identity/
+Sitemap: https://neo-robots.ru/sitemap.xml
+Host: https://neo-robots.ru/

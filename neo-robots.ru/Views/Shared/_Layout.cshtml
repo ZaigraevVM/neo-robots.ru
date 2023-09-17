@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SMI</title>
+    <title>@ViewData["Title"] - @Constants.Name</title>
     <link rel="stylesheet" href="~/lib/bootstrap/5/css/bootstrap.min.css" />
     <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Raleway:wght@200;300;400;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SMI</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@Constants.Name</a>
 
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
 
@@ -79,7 +79,7 @@
 
     <footer class="footer text-muted mb-3">
         <div class="container">
-            &copy; @DateTime.Now.Year - SMI
+            &copy; @DateTime.Now.Year - @Constants.Name
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

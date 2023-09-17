@@ -28,8 +28,10 @@ namespace SMI.Areas.Admin.Models
 		[Display(Name = "Название")]
 		public string Name { get; set; }
 
-
-		public List<HashTagsTheme> HashTagsThemes { get; set; }
+		[Display(Name = "Сортировка")]
+		public int Sorting { get; set; }
+        public string History { get; set; }
+        public List<HashTagsTheme> HashTagsThemes { get; set; }
 		public List<NewsTheme> NewsThemes { get; set; }
 	}
 }

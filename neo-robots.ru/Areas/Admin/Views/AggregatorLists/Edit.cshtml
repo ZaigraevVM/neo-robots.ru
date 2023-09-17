@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.TitleAdd = (Model.Title == null || Model.Title.Trim() == "" ? "Создание | " : Model.Title.Trim() + " | ") + "Источники агрегатора | ";
+    ViewBag.LeftMenu = 3;
+}
+
+@model AggregatorListEdit
+
+@section Scripts {
+    <script type="text/javascript">
+		$(function () {
+
+			var ItemEdit = {
+				Init: function () {
+                    $("select").not(".ex").chosen({ width: "100%" });
+					$("#Description").ckeditor({});
+				}
+			};
+
+			ItemEdit.Init();
+
+		})
+    </script>
+}
+@using (Html.BeginForm("save", "aggregatorlists", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-sm-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Сервис</li>
+                    <li class="breadcrumb-item"><a href="/admin/aggregatorsources">Агрегаторы</a></li>
+                    <li class="breadcrumb-item">Список новостей</li>
+                    <li class="breadcrumb-item active">
+                        @if (Model.Id > 0)
+                        {
+                            @("Редактирование")
+                        }
+                        else
+                        {
+                            @("Создание")
+                        }
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="@Model.GetReturnTo" class="btn">Отмена</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12" id="edit-item">
+
+            @Html.ValidationSummary()
+
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.AggregatorSourceId)
+
+            @Html.Hidden("ReturnTo", Model.ReturnTo)
+
+            @if (Model.EditError != null && Model.EditError != "")
+            {
+                <pre class="alert-danger">@Model.EditError</pre>
+            }
+
+            <div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-bs-toggle="tab">Описание</a>
+                    </li>
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabhistory" class="nav-link" aria-current="page" role="tab" data-bs-toggle="tab">История изменения</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="tabdescription">
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.Title, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.Url, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextBoxFor(m => m.Url, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.LinkHtmlPath, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextBoxFor(m => m.LinkHtmlPath, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" id="tabhistory" class="tab-pane">
+                        <div style="white-space: pre-line;">
+                            @Model.History
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions mt-5 mb-3">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="@Model.GetReturnTo" class="btn">Отмена</a>
+            </div>
+        </div>
+    </div>
+}

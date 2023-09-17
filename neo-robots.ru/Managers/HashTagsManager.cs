@@ -6,69 +6,48 @@ using SMI.Areas.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using System.Threading.Tasks;
 
 namespace SMI.Managers
 {
-    public interface IHashTagsManager
-    {
-        HashTagsList GetList(HashTagsList m);
-        HashTagsList ListData(HashTagsList m);
-        HashTagEdit New();
-        HashTagEdit Get(int id);
-        HashTagEdit EditorData(HashTagEdit m);
-        HashTagEdit Save(HashTagEdit m);
-        bool Delete(int id);
-        List<HashTag> GetCache(int Timer = 600);
-    }
+    public interface IHashTagsManager : IManager<HashTagsList, HashTagEdit, HashTag> { }
 
-    public class HashTagsManager : IHashTagsManager
+    public class HashTagsManager : IHashTagsManager, ICache<HashTag>
     {
+        public IMemoryCache Cache { get; set; }
         private readonly SmiContext _context;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         public HashTagsManager(SmiContext context, IMapper mapper, IMemoryCache cache)
         {
+            Cache = cache;
             _context = context;
             _mapper = mapper;
-            _cache = cache;
         }
 
         public HashTagEdit New()
         {
             return new HashTagEdit();
         }
-        public HashTagEdit Get(int id)
+        public async Task<HashTagEdit> GetAsync(int id)
         {
-            return _mapper.Map<HashTagEdit>(_context.HashTags.FirstOrDefault(c => c.Id == id));
+            return _mapper.Map<HashTagEdit>(await _context.HashTags.FirstOrDefaultAsync(c => c.Id == id));
         }
-        public HashTagEdit EditorData(HashTagEdit m)
+        public async Task<HashTagEdit> EditorDataAsync(HashTagEdit m)
         {
             return m;
         }
-        public HashTagsList GetList(HashTagsList m)
+        public async Task<HashTagsList> GetListAsync(HashTagsList m)
         {
             var res = _context.HashTags
-                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)));
+                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Name);
-                else
-                    res = res.OrderByDescending(o => o.Name);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            m.Count = res.Count();
-            m.Items = res
+            m.Count = await res.CountAsync();
+            m.Items = await res
                 //.Include(i => i.HashTagsCollection)
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToListAsync();
 
             return m;
         }
@@ -77,69 +56,38 @@ namespace SMI.Managers
         {
             return m;
         }
-        public HashTagEdit Save(HashTagEdit m)
+        public async Task<HashTagEdit> SaveAsync(HashTagEdit m)
         {
-            var HashTag = _context.HashTags.FirstOrDefault(c => c.Id == m.Id);
+            var HashTag = await _context.HashTags.FirstOrDefaultAsync(c => c.Id == m.Id);
             if (HashTag == null)
                 HashTag = new HashTag();
 
             HashTag.Name = m.Name;
 
             _context.Update(HashTag);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<HashTag>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.HashTags.FirstOrDefault(c => c.Id == id);
+            var m = await _context.HashTags.FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            (this as ICache<HashTag>).SetCache(_context);
+
             return true;
         }
 
-        #region Cache
-        private readonly string CacheName = "HashTagsManager.List";
-        private readonly string CacheNameTimer = "HashTagsManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public IList<HashTag> GetCache(int Timer = 600)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.HashTags.OrderBy(o => o.Name).AsNoTracking().ToList(), Timer);
-            }
+            return (this as ICache<HashTag>).GetCache(_context, Timer);
         }
-
-        public List<HashTag> GetCache(int Timer = 600)
-        {
-            List<HashTag> List = new List<HashTag>();
-            lock (CacheLock)
-            {
-                if (!_cache.TryGetValue(CacheName, out List))
-                {
-                    List = _context.HashTags.OrderBy(o => o.Name).ToList();
-                    SetCache(List, Timer);
-                }
-            }
-            return List;
-        }
-
-        private void SetCache(List<HashTag> List, int Timer = 600)
-        {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
-        }
-        #endregion
     }
 }

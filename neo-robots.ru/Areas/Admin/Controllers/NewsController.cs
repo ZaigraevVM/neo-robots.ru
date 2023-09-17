@@ -12,6 +12,10 @@ using SMI.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using Microsoft.Extensions.Logging;
+using SMI.Controllers;
 
 namespace SMI.Areas.Admin.Controllers
 {
@@ -23,18 +27,20 @@ namespace SMI.Areas.Admin.Controllers
 		private readonly IPhotosManager _mgrPhotos;
 		private readonly IViewRender _view;
 		private readonly IHostingEnvironment _hostingEnvironment;
-		public NewsController(INewsManager mgr, IViewRender view, IHostingEnvironment hostingEnvironment, IPhotosManager mgrPhotos)
+        private readonly ILogger<NewsController> _logger;
+        public NewsController(INewsManager mgr, IViewRender view, IHostingEnvironment hostingEnvironment, IPhotosManager mgrPhotos, ILogger<NewsController> logger)
 		{
 			_mgr = mgr;
 			_view = view;
 			_hostingEnvironment = hostingEnvironment;
 			_mgrPhotos = mgrPhotos;
+			_logger = logger;
 			ViewBag.WebRootPath = _hostingEnvironment.WebRootPath;
 		}
 
-		public ActionResult Index(NewsList m)
+		public async Task<IActionResult> IndexAsync(NewsList m)
 		{
-			m = _mgr.GetList(m);
+			m = await _mgr.GetListAsync(m);
 
 			if ("ajax" == m.Type)
 				return Json(new
@@ -47,41 +53,43 @@ namespace SMI.Areas.Admin.Controllers
 			return View("List", _mgr.ListData(m));
 		}
 
-		public ActionResult Remove(int Id)
+		public async Task<IActionResult> RemoveAsync(int Id)
 		{
 			try
 			{
-				_mgr.Delete(Id);
+                await _mgr.DeleteAsync(Id);
 				if (Request.Headers["Referer"] != "")
 					return Redirect(Request.Headers["Referer"]);
 			}
-			catch { }
+			catch (Exception ex){
+				_logger.LogError(ex, "Error when remove news");
+			}
 			return RedirectToAction("Index");
 		}
 
-		public ActionResult Create()
+		public async Task<IActionResult> CreateAsync()
 		{
 			var m = new NewsEdit()
 			{
 				ReturnTo = Request.Headers["Referer"]
 			};
 
-			return View("Edit", _mgr.EditorData(m));
+			return View("Edit", await _mgr.EditorDataAsync(m));
 		}
 
-		public ActionResult Edit(int Id)
+		public async Task<IActionResult> EditAsync(int Id)
 		{
-			var m = _mgr.Get(Id);
+			var m = await _mgr.GetAsync(Id);
 
 			if (m == null) return NotFound("Error");
 
 			m.ReturnTo = Request.Headers["Referer"];
 			ViewBag.WebRootPath = _hostingEnvironment.WebRootPath;
-			return View("Edit", _mgr.EditorData(m));
+			return View("Edit", await _mgr.EditorDataAsync(m));
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Save(NewsEdit m, IFormFile file)
+		public async Task<IActionResult> SaveAsync(NewsEdit m, IFormFile file)
 		{
 			if (ModelState.IsValid)
 			{
@@ -157,7 +165,7 @@ namespace SMI.Areas.Admin.Controllers
 									SizeType = "w890x534"
 								});
 
-							var photo = _mgrPhotos.Save(new PhotoEdit() { Name = file.FileName, FileName = IdGuid + Extension });
+							var photo = await _mgrPhotos.SaveAsync(new PhotoEdit() { Name = file.FileName, FileName = IdGuid + Extension });
 							m.PhotoId = photo.Id;
 						}
 						else
@@ -168,7 +176,7 @@ namespace SMI.Areas.Admin.Controllers
 					}
 					#endregion
 
-					_mgr.Save(m);
+					await _mgr.SaveAsync(m);
 
 					if (file != null)
 						return RedirectToAction("edit", new { id = m.Id, returnto = m.GetReturnTo, selecttab = "tabphotos" });
@@ -181,14 +189,14 @@ namespace SMI.Areas.Admin.Controllers
 				}
 			}
 
-			m = _mgr.EditorData(m);
+			m = await _mgr.EditorDataAsync(m);
 
 			return View("Edit", m);
 		}
 
-		public ActionResult GetList()
+		public async Task<IActionResult> GetListAsync()
 		{
-			List<News> NewsList = _mgr.GetCache();
+			IList<News> NewsList = _mgr.GetCache();
 			return Json(new
 			{
 				News = NewsList.Select(s => new { s.Id, s.Title })

@@ -1,27 +1,20 @@
 ﻿@{
     ViewBag.TitleAdd = (Model.Name == null || Model.Name.Trim() == "" ? "Создание | " : Model.Name.Trim() + " | ") + "Фотографии | ";
     ViewBag.LeftMenu = 3;
+
+    var originalPath = ContentUrl.OriginalPhoto + Model.FileName;
+    string originalURL = Url.Content(originalPath);
+    var w1000x523Path = ContentUrl.w1000x523 + Model.FileName;
+    var w100x100Path = ContentUrl.w100x100 + Model.FileName;
+    var w200x150Path = ContentUrl.w200x150 + Model.FileName;
+    var w450x150Path = ContentUrl.w450x150 + Model.FileName;
+    var w500x300Path = ContentUrl.w500x300 + Model.FileName;
+    var w890x534Path = ContentUrl.w890x534 + Model.FileName;
 }
 
 @model PhotoEdit
 
-@section Scripts {
-    <script type="text/javascript">
-		$(function () {
-
-			var ItemEdit = {
-				Init: function () {
-                    $("select").not(".ex").chosen({ width: "100%" });
-					$("#Description").ckeditor({});
-				}
-			};
-
-			ItemEdit.Init();
-
-		})
-    </script>
-}
-@using (Html.BeginForm("save", "photos", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("save", "photos", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {
     <div class="row">
         <div class="col-sm-8">
@@ -67,14 +60,16 @@
             <div>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="nav-item">
-                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-toggle="tab">Описание</a>
+                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-bs-toggle="tab">Описание</a>
+                    </li>
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabhistory" class="nav-link" aria-current="page" role="tab" data-bs-toggle="tab">История изменения</a>
                     </li>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="tabdescription">
-
                         <div class="form-group mt-3">
                             <div class="row">
                                 @Html.LabelFor(model => model.Name, new { @class = "col-sm-2 control-label text-end fw-bold" })
@@ -83,10 +78,130 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.SourceUrl, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextBoxFor(m => m.SourceUrl, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
 
+                        <fieldset style="width: 100%;">
+                            <legend>Основное изображение новости</legend>
 
+                            <input id="PhotoFile" type="hidden" value="@Model.FileName" name="FileName" />
+                            @{
+                                var fileName = Model.FileName;
+                                var visible = (fileName != null) ? "" : "display: none";
+                                
+                                string controllerURL = "/admin/common/croppicture";
+                            }
 
-
+                            <div id="photoFiles" style="@visible" class="row">
+                                <label class="col-sm-2 control-label"><a href="@originalURL" target="_blank">Оригинал</a></label>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#w100x100Modal">Редактировать</a>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        @if (fileName != null && new FileInfo(ViewBag.WebRootPath + w100x100Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w100x100Path)?v=@DateTime.Now.ToString("mmssff")" id="w100x100image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/news/w100x100/nophoto.png" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#w200x150Modal">Редактировать</a>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        @if (fileName != null && new FileInfo(ViewBag.WebRootPath + w200x150Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w200x150Path)?v=@DateTime.Now.ToString("mmssff")" id="w200x150image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/news/w200x150/nophoto.png" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#w450x150Modal">Редактировать</a>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        @if (fileName != null && new FileInfo(ViewBag.WebRootPath + w450x150Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w450x150Path)?v=@DateTime.Now.ToString("mmssff")" id="w450x150image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/news/w450x150/nophoto.png" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#w500x300Modal">Редактировать</a>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        @if (fileName != null && new FileInfo(ViewBag.WebRootPath + w500x300Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w500x300Path)?v=@DateTime.Now.ToString("mmssff")" id="w500x300image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/news/w500x300/nophoto.png" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#w890x534Modal">Редактировать</a>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        @if (fileName != null && new FileInfo(ViewBag.WebRootPath + w890x534Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w890x534Path)?v=@DateTime.Now.ToString("mmssff")" id="w890x534image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/news/w890x534/nophoto.png" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 control-label">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#w1000x523Modal">Редактировать</a>
+                                    </label>
+                                    <div class="col-sm-10">
+                                        @if (fileName != null && new FileInfo(ViewBag.WebRootPath + w1000x523Path.Replace("~", "")).Exists)
+                                        {
+                                            <img src="@Url.Content(w1000x523Path)?v=@DateTime.Now.ToString("mmssff")" id="w1000x523image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/news/1000x523/nophoto.png" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="original">
+                                <div class="col-sm-10">
+                                    <input type="file" name="file" />
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tabhistory">
+                        <div style="white-space: pre-line;">
+                            @Model.History
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,3 +213,67 @@
         </div>
     </div>
 }
+
+
+@section Scripts {
+    <script type="text/javascript">
+        var ItemEdit = {
+            Init: function () {
+                this.InitCrop(1000, 523);
+                this.InitCrop(100, 100);
+                this.InitCrop(200, 150);
+                this.InitCrop(450, 150);
+                this.InitCrop(500, 300);
+                this.InitCrop(890, 534);
+                $("select").not(".ex").chosen({ width: "100%" });
+                $("#Description").ckeditor({});
+            },
+            InitCrop: function(w, h){
+                var selector = `#w${w}x${h}`;
+                $(selector).Jcrop({
+                    aspectRatio: w / h
+                }, function () {
+                    $(selector).data('crop', this);
+                });
+            },
+            Save: function(t){
+                var el = $('#' + t);
+                var cropTell = el.data('crop').tellScaled();
+
+                var editPictureData = {
+                    pictureId: el.data('filename'),
+                    x1: Math.round(cropTell.x),
+                    y1: Math.round(cropTell.y),
+                    x2: Math.round(cropTell.x2),
+                    y2: Math.round(cropTell.y2),
+                    width: Math.round(cropTell.w),
+                    height: Math.round(cropTell.h),
+                    sizeType: t,
+                    pictureWidth: Math.round(el.width()),
+                    pictureHeight: Math.round(el.height())
+                };
+
+                $.ajax({
+                    url: '/Admin/Photos/CropPicture',
+                    data: editPictureData,
+                    type: 'post',
+                    success: function (d) {
+                        $("#" + d.type + "image").attr('src', d.path);
+                    }
+                });
+
+            }
+        };
+
+        $(function () {
+            ItemEdit.Init();
+        })
+    </script>
+}
+
+@await Html.PartialAsync("_CropModal", new CropModel() { Type = "w1000x523", FileName = Model.FileName, OriginalUrl = originalURL })
+@await Html.PartialAsync("_CropModal", new CropModel() { Type = "w100x100", FileName = Model.FileName, OriginalUrl = originalURL })
+@await Html.PartialAsync("_CropModal", new CropModel() { Type = "w200x150", FileName = Model.FileName, OriginalUrl = originalURL })
+@await Html.PartialAsync("_CropModal", new CropModel() { Type = "w450x150", FileName = Model.FileName, OriginalUrl = originalURL })
+@await Html.PartialAsync("_CropModal", new CropModel() { Type = "w500x300", FileName = Model.FileName, OriginalUrl = originalURL })
+@await Html.PartialAsync("_CropModal", new CropModel() { Type = "w890x534", FileName = Model.FileName, OriginalUrl = originalURL })

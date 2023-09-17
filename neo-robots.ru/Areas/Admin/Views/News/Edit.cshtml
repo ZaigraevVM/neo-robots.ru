@@ -14,6 +14,32 @@
                 Init: function () {
                     $("select").not(".ex").chosen({ width: "100%" });
                     $("#Text").ckeditor({});
+                    $("body").on('change', "#RegionsIds", function () {
+                        console.log('this', $(this).val());
+				        if ($(this).val()) {
+					        $.ajax({
+						        type: 'post',
+						        url: "/admin/cities/filteredbyregions",
+						        data: { filter: $(this).val().toString() },
+						        success: function (d) {
+                                    console.log('d', d);
+							        var selected = $("#CitiesIds").val();
+                                    console.log('selected');
+							        $("#CitiesIds").empty();
+                                    console.log('0');
+							        $.each(d, function () {
+								        if ($.inArray(this.id.toString(), selected) > -1)
+									        $("#CitiesIds").append($("<option>", { selected: "selected" }).html(this.name).val(this.id));
+								        else
+									        $("#CitiesIds").append($("<option>").html(this.name).val(this.id));
+							        });
+                                    console.log('1');
+							        $("#CitiesIds").trigger("chosen:updated");
+                                    console.log('2');
+						        }
+					        });
+				        }
+			        });
                 }
             };
 
@@ -67,10 +93,13 @@
             <div>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="nav-item">
-                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-toggle="tab">Описание</a>
+                        <a href="#tabdescription" class="nav-link active" aria-current="page" role="tab" data-bs-toggle="tab">Описание</a>
                     </li>
                     <li role="presentation" class="nav-item">
-                        <a href="#tabphotos" class="nav-link" aria-current="page" role="tab" data-toggle="tab">Фотографии</a>
+                        <a href="#tabphotos" class="nav-link" aria-current="page" role="tab" data-bs-toggle="tab">Фотографии</a>
+                    </li>
+                    <li role="presentation" class="nav-item">
+                        <a href="#tabhistory" class="nav-link" aria-current="page" role="tab" data-bs-toggle="tab">История изменения</a>
                     </li>
                 </ul>
 
@@ -85,20 +114,30 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group mt-3">
                             <div class="row">
-                                @Html.LabelFor(model => model.NewsRegions, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                @Html.LabelFor(model => model.Path, new { @class = "col-sm-2 control-label text-end fw-bold" })
                                 <div class="col-sm-10">
-                                    @Html.DropDownListFor(m => m.NewsRegions, new SelectList(Model.NewsRegions, "Id", "Name", "100"), new { @class = "form-control" })
+                                    @Html.TextBoxFor(m => m.Path, new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group mt-3">
                             <div class="row">
-                                @Html.LabelFor(model => model.NewsCities, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                @Html.LabelFor(model => model.RegionsIds, new { @class = "col-sm-2 control-label text-end fw-bold" })
                                 <div class="col-sm-10">
-                                    @Html.DropDownListFor(m => m.NewsCities, new SelectList(Model.NewsCities, "Id", "Name", "100"), new { @class = "form-control" })
+                                    @Html.ListBoxFor(m => m.RegionsIds, new SelectList(Model.Regions, "Id", "Name"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.CitiesIds, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.ListBoxFor(m => m.CitiesIds, new SelectList(Model.Cities, "Id", "Name"), new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -121,6 +160,14 @@
                             </div>
                         </div>
 
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.Intro, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.TextAreaFor(m => m.Intro, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-group mt-3">
                             <div class="row">
@@ -157,6 +204,14 @@
                             </div>
                         </div>
 
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                @Html.LabelFor(model => model.IsPublish, new { @class = "col-sm-2 control-label text-end fw-bold" })
+                                <div class="col-sm-10">
+                                    @Html.CheckBoxFor(m => m.IsPublish, new { })
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div role="tabpanel" id="tabphotos" class="tab-pane">
                         <fieldset style="width: 100%;">
@@ -232,6 +287,11 @@
                                 </div>
                             </div>
                         </fieldset>
+                    </div>
+                    <div role="tabpanel" id="tabhistory" class="tab-pane">
+                        <div style="white-space: pre-line;">
+                            @Model.History
+                        </div>
                     </div>
                 </div>
             </div>

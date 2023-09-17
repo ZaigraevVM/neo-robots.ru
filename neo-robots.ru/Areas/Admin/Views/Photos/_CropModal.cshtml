@@ -1,0 +1,18 @@
+﻿@model CropModel
+
+<div class="modal fade" id="@($"{Model.Type}Modal")" tabindex="-1" aria-labelledby="@($"{Model.Type}ModalLabel")" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактирование @Model.Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="@Model.OriginalUrl?v=@DateTime.Now.ToString("mmssff")" id="@Model.Type" data-filename="@Model.FileName" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="ItemEdit.Save('@Model.Type')">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>

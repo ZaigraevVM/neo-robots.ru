@@ -32,10 +32,9 @@ namespace SMI.Areas.Admin.Models
 		[Required(ErrorMessage = "Требуется поле Регион")]
 		[Range(1, 1100, ErrorMessage = "Требуется поле Регион")]
 		public int RegionId { get; set; }
+        public string History { get; set; }
 
-
-
-		public List<Region> RegionsList { get; set; }
+        public List<Region> RegionsList { get; set; }
 
 	}
 }

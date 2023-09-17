@@ -17,7 +17,7 @@ namespace SMI.Migrations
             modelBuilder
                 .HasAnnotation("Relational:Collation", "Cyrillic_General_CI_AS")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -220,6 +220,198 @@ namespace SMI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AggregatorSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LoadedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LoadedHtml")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AggregatorSourceId");
+
+                    b.ToTable("AggregatorLists");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorNews", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AggregatorSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Html")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SourceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AggregatorSourceId");
+
+                    b.ToTable("AggregatorNews");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorPage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AggregatorSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DateHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SouceTitleHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SouceUrlHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TextHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitleHtmlPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UrlRegex")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AggregatorSourceId");
+
+                    b.ToTable("AggregatorPages");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AggregatorSources");
+                });
+
             modelBuilder.Entity("SMI.Data.Entities.Author", b =>
                 {
                     b.Property<int>("Id")
@@ -227,15 +419,30 @@ namespace SMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .HasMaxLength(500)
                         .IsUnicode(false)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .HasMaxLength(500)
                         .IsUnicode(false)
                         .HasColumnType("varchar(500)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -248,6 +455,21 @@ namespace SMI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(500)
@@ -271,6 +493,21 @@ namespace SMI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(500)
@@ -319,31 +556,67 @@ namespace SMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AggregatorNewsId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("AuthorId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Intro")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublish")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("NewspapersId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<int?>("PhotoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
+                        .HasMaxLength(4000)
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasMaxLength(500)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AggregatorNewsId")
+                        .IsUnique()
+                        .HasFilter("[AggregatorNewsId] IS NOT NULL");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("NewspapersId");
+
+                    b.HasIndex("Path")
+                        .IsUnique()
+                        .HasFilter("[Path] IS NOT NULL");
 
                     b.HasIndex("PhotoId");
 
@@ -402,6 +675,21 @@ namespace SMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -418,14 +706,32 @@ namespace SMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FileName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(500)
                         .IsUnicode(false)
                         .HasColumnType("varchar(500)");
+
+                    b.Property<string>("SourceUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -438,6 +744,21 @@ namespace SMI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(500)
@@ -456,9 +777,27 @@ namespace SMI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("History")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Sorting")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -516,6 +855,40 @@ namespace SMI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorList", b =>
+                {
+                    b.HasOne("SMI.Data.Entities.AggregatorSource", "AggregatorSource")
+                        .WithMany("AggregatorLists")
+                        .HasForeignKey("AggregatorSourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AggregatorSource");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorNews", b =>
+                {
+                    b.HasOne("SMI.Data.Entities.AggregatorSource", "AggregatorSource")
+                        .WithMany("AggregatorNewsList")
+                        .HasForeignKey("AggregatorSourceId")
+                        .HasConstraintName("FK_AggregatorNews_AggregatorSourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AggregatorSource");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorPage", b =>
+                {
+                    b.HasOne("SMI.Data.Entities.AggregatorSource", "AggregatorSource")
+                        .WithMany("AggregatorPages")
+                        .HasForeignKey("AggregatorSourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AggregatorSource");
+                });
+
             modelBuilder.Entity("SMI.Data.Entities.City", b =>
                 {
                     b.HasOne("SMI.Data.Entities.Region", "Region")
@@ -533,12 +906,14 @@ namespace SMI.Migrations
                         .WithMany("HashTagsNews")
                         .HasForeignKey("HashTagId")
                         .HasConstraintName("FK_HashTagsNews_HashTags")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SMI.Data.Entities.News", "News")
                         .WithMany("HashTagsNews")
                         .HasForeignKey("NewsId")
                         .HasConstraintName("FK_HashTagsNews_News")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("HashTag");
@@ -567,6 +942,11 @@ namespace SMI.Migrations
 
             modelBuilder.Entity("SMI.Data.Entities.News", b =>
                 {
+                    b.HasOne("SMI.Data.Entities.AggregatorNews", "AggregatorNews")
+                        .WithOne("News")
+                        .HasForeignKey("SMI.Data.Entities.News", "AggregatorNewsId")
+                        .HasConstraintName("FK_AggregatorNews_AggregatorNews");
+
                     b.HasOne("SMI.Data.Entities.Author", "Author")
                         .WithMany("News")
                         .HasForeignKey("AuthorId")
@@ -582,6 +962,8 @@ namespace SMI.Migrations
                         .HasForeignKey("PhotoId")
                         .HasConstraintName("FK_News_Photos");
 
+                    b.Navigation("AggregatorNews");
+
                     b.Navigation("Author");
 
                     b.Navigation("Newspapers");
@@ -595,12 +977,14 @@ namespace SMI.Migrations
                         .WithMany("NewsCities")
                         .HasForeignKey("CityId")
                         .HasConstraintName("FK_NewsCities_Cities")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SMI.Data.Entities.News", "News")
                         .WithMany("NewsCities")
                         .HasForeignKey("NewsId")
                         .HasConstraintName("FK_NewsCities_News")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cities");
@@ -614,12 +998,14 @@ namespace SMI.Migrations
                         .WithMany("NewsRegions")
                         .HasForeignKey("NewsId")
                         .HasConstraintName("FK_NewsRegions_News")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SMI.Data.Entities.Region", "Region")
                         .WithMany("NewsRegions")
                         .HasForeignKey("RegionId")
                         .HasConstraintName("FK_NewsRegions_Regions")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("News");
@@ -633,17 +1019,33 @@ namespace SMI.Migrations
                         .WithMany("NewsThemes")
                         .HasForeignKey("NewsId")
                         .HasConstraintName("FK_NewsThemes_News")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SMI.Data.Entities.Theme", "Theme")
                         .WithMany("NewsThemes")
                         .HasForeignKey("ThemeId")
                         .HasConstraintName("FK_NewsThemes_Themes")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("News");
 
                     b.Navigation("Theme");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorNews", b =>
+                {
+                    b.Navigation("News");
+                });
+
+            modelBuilder.Entity("SMI.Data.Entities.AggregatorSource", b =>
+                {
+                    b.Navigation("AggregatorLists");
+
+                    b.Navigation("AggregatorNewsList");
+
+                    b.Navigation("AggregatorPages");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.Author", b =>

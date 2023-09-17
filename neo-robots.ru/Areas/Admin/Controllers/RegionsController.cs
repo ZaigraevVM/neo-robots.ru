@@ -7,97 +7,98 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace SMI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Authorize]
-	public class RegionsController : Controller
+    [Authorize(Roles = "admin")]
+    public class RegionsController : Controller
     {
-		private readonly IRegionsManager _mgr;
-		private readonly IViewRender _view;
-		public RegionsController(IRegionsManager mgr, IViewRender view)
-		{
-			_mgr = mgr;
-			_view = view;
-		}
+        private readonly IRegionsManager _mgr;
+        private readonly IViewRender _view;
+        public RegionsController(IRegionsManager mgr, IViewRender view)
+        {
+            _mgr = mgr;
+            _view = view;
+        }
 
-		public ActionResult Index(RegionsList m)
-		{
-			m = _mgr.GetList(m);
+        public async Task<IActionResult> IndexAsync(RegionsList m)
+        {
+            m = await _mgr.GetListAsync(m);
 
-			if ("ajax" == m.Type)
-				return Json(new
-				{
-					m.Search,
-					Items = _view.Render("~/Areas/Admin/Views/Regions/ListItems.cshtml", m),
-					Pager = _view.Render("~/Areas/Admin/Views/Shared/_Pager.cshtml", m.GetPager())
-				});
+            if ("ajax" == m.Type)
+                return Json(new
+                {
+                    m.Search,
+                    Items = _view.Render("~/Areas/Admin/Views/Regions/ListItems.cshtml", m),
+                    Pager = _view.Render("~/Areas/Admin/Views/Shared/_Pager.cshtml", m.GetPager())
+                });
 
-			return View("List", _mgr.ListData(m));
-		}
+            return View("List", _mgr.ListData(m));
+        }
 
-		public ActionResult Remove(int Id)
-		{
-			try
-			{
-				_mgr.Delete(Id);
-				if (Request.Headers["Referer"] != "")
-					return Redirect(Request.Headers["Referer"]);
-			}
-			catch { }
-			return RedirectToAction("Index");
-		}
+        public async Task<IActionResult> RemoveAsync(int Id)
+        {
+            try
+            {
+                await _mgr.DeleteAsync(Id);
+                if (Request.Headers["Referer"] != "")
+                    return Redirect(Request.Headers["Referer"]);
+            }
+            catch { }
+            return RedirectToAction("Index");
+        }
 
-		public ActionResult Create()
-		{
-			var m = new RegionEdit()
-			{
-				ReturnTo = Request.Headers["Referer"]
-			};
+        public async Task<IActionResult> CreateAsync()
+        {
+            var m = new RegionEdit()
+            {
+                ReturnTo = Request.Headers["Referer"]
+            };
 
-			return View("Edit", _mgr.EditorData(m));
-		}
+            return View("Edit", await _mgr.EditorDataAsync(m));
+        }
 
-		public ActionResult Edit(int Id)
-		{
-			var m = _mgr.Get(Id);
+        public async Task<IActionResult> EditAsync(int Id)
+        {
+            var m = await _mgr.GetAsync(Id);
 
-			if (m == null) return NotFound("Error");
+            if (m == null) return NotFound("Error");
 
-			m.ReturnTo = Request.Headers["Referer"];
+            m.ReturnTo = Request.Headers["Referer"];
 
-			return View("Edit", _mgr.EditorData(m));
-		}
+            return View("Edit", await _mgr.EditorDataAsync(m));
+        }
 
-		[HttpPost]
-		public ActionResult Save(RegionEdit m)
-		{
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					_mgr.Save(m);
-					return Redirect(m.GetReturnTo);
-				}
-				catch (Exception ex)
-				{
-					m.EditError = ex.ToString();
-				}
-			}
+        [HttpPost]
+        public async Task<IActionResult> SaveAsync(RegionEdit m)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _mgr.SaveAsync(m);
+                    return Redirect(m.GetReturnTo);
+                }
+                catch (Exception ex)
+                {
+                    m.EditError = ex.ToString();
+                }
+            }
 
-			m = _mgr.EditorData(m);
+            m = await _mgr.EditorDataAsync(m);
 
-			return View("Edit", m);
-		}
+            return View("Edit", m);
+        }
 
-		public ActionResult GetList()
-		{
-			List<Region> RegionList = _mgr.GetCache();
-			return Json(new
-			{
-				City = RegionList.Select(s => new { s.Id, s.Name })
-			});
-		}
-	}
+        public async Task<IActionResult> GetListAsync()
+        {
+            IList<Region> RegionList = _mgr.GetCache();
+            return Json(new
+            {
+                City = RegionList.Select(s => new { s.Id, s.Name })
+            });
+        }
+    }
 }

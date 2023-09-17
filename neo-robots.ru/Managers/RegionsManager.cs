@@ -6,68 +6,46 @@ using SMI.Areas.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using System.Threading.Tasks;
 
 namespace SMI.Managers
 {
-    public interface IRegionsManager
-    {
-        RegionsList GetList(RegionsList m);
-        RegionsList ListData(RegionsList m);
-        RegionEdit New();
-        RegionEdit Get(int id);
-        RegionEdit EditorData(RegionEdit m);
-        RegionEdit Save(RegionEdit m);
-        bool Delete(int id);
-        List<Region> GetCache(int Timer = 600);
-    }
+    public interface IRegionsManager : IManager<RegionsList, RegionEdit, Region> { }
 
-    public class RegionsManager : IRegionsManager
+    public class RegionsManager : IRegionsManager, ICache<Region>
     {
+        public IMemoryCache Cache { get; set; }
         private readonly SmiContext _context;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         public RegionsManager(SmiContext context, IMapper mapper, IMemoryCache cache)
         {
+            Cache = cache;
             _context = context;
             _mapper = mapper;
-            _cache = cache;
         }
 
         public RegionEdit New()
         {
             return new RegionEdit();
         }
-        public RegionEdit Get(int id)
+        public async Task<RegionEdit> GetAsync(int id)
         {
-            return _mapper.Map<RegionEdit>(_context.Regions.FirstOrDefault(c => c.Id == id));
+            return _mapper.Map<RegionEdit>(_context.Regions.FirstOrDefaultAsync(c => c.Id == id));
         }
-        public RegionEdit EditorData(RegionEdit m)
+        public async Task<RegionEdit> EditorDataAsync(RegionEdit m)
         {
             return m;
         }
-        public RegionsList GetList(RegionsList m)
+        public async Task<RegionsList> GetListAsync(RegionsList m)
         {
             var res = _context.Regions
-                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)));
+                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Name);
-                else
-                    res = res.OrderByDescending(o => o.Name);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            m.Count = res.Count();
-            m.Items = res
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+            m.Count = await res.CountAsync();
+            m.Items = await res.Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToListAsync();
 
             return m;
         }
@@ -76,9 +54,9 @@ namespace SMI.Managers
         {
             return m;
         }
-        public RegionEdit Save(RegionEdit m)
+        public async Task<RegionEdit> SaveAsync(RegionEdit m)
         {
-            var Region = _context.Regions.FirstOrDefault(c => c.Id == m.Id);
+            var Region = await _context.Regions.FirstOrDefaultAsync(c => c.Id == m.Id);
             if (Region == null)
                 Region = new Region();
 
@@ -86,63 +64,29 @@ namespace SMI.Managers
             Region.Name = m.Name;
 
             _context.Update(Region);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<Region>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.Regions.FirstOrDefault(c => c.Id == id);
+            var m = await _context.Regions.FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<Region>).SetCache(_context);
 
             return true;
         }
 
-        #region Cache
-        private readonly string CacheName = "RegionsManager.List";
-        private readonly string CacheNameTimer = "RegionsManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public IList<Region> GetCache(int Timer = 600)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.Regions.OrderBy(o => o.Name).AsNoTracking().ToList(), Timer);
-            }
+            return (this as ICache<Region>).GetCache(_context, Timer);
         }
-
-        public List<Region> GetCache(int Timer = 600)
-        {
-            List<Region> List = new List<Region>();
-            lock (CacheLock)
-            {
-                if (!_cache.TryGetValue(CacheName, out List))
-                {
-                    List = _context.Regions.OrderBy(o => o.Name).ToList();
-                    SetCache(List, Timer);
-                }
-            }
-            return List;
-        }
-
-        private void SetCache(List<Region> List, int Timer = 600)
-        {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
-        }
-        #endregion
     }
 }

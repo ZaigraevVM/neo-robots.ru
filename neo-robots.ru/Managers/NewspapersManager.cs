@@ -6,148 +6,88 @@ using SMI.Areas.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using System.Threading.Tasks;
 
 namespace SMI.Managers
 {
-    public interface INewspapersManager
-    {
-        NewspapersList GetList(NewspapersList m);
-        NewspapersList ListData(NewspapersList m);
-        NewspaperEdit New();
-        NewspaperEdit Get(int id);
-        NewspaperEdit EditorData(NewspaperEdit m);
-        NewspaperEdit Save(NewspaperEdit m);
-        bool Delete(int id);
-        List<Newspaper> GetCache(int Timer = 600);
-    }
+    public interface INewspapersManager : IManager<NewspapersList, NewspaperEdit, Newspaper> { }
 
-    public class NewspapersManager : INewspapersManager
+    public class NewspapersManager : INewspapersManager, ICache<Newspaper>
     {
+        public IMemoryCache Cache { get; set; }
         private readonly SmiContext _context;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         public NewspapersManager(SmiContext context, IMapper mapper, IMemoryCache cache)
         {
             _context = context;
             _mapper = mapper;
-            _cache = cache;
+            Cache = cache;
         }
-
         public NewspaperEdit New()
         {
             return new NewspaperEdit();
         }
-        public NewspaperEdit Get(int id)
+        public async Task<NewspaperEdit> GetAsync(int id)
         {
-            return _mapper.Map<NewspaperEdit>(_context.Newspapers.FirstOrDefault(c => c.Id == id));
+            return _mapper.Map<NewspaperEdit>(await _context.Newspapers.FirstOrDefaultAsync(c => c.Id == id));
         }
-        public NewspaperEdit EditorData(NewspaperEdit m)
+        public async Task<NewspaperEdit> EditorDataAsync(NewspaperEdit m)
         {
-           
             return m;
         }
-        public NewspapersList GetList(NewspapersList m)
+        public async Task<NewspapersList> GetListAsync(NewspapersList m)
         {
             var res = _context.Newspapers
-                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)) && (m.Select == 0 || w.Id == m.Select));
+                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)) && (m.Select == 0 || w.Id == m.Select))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Name);
-                else
-                    res = res.OrderByDescending(o => o.Name);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            else
-            {
-                res = res.OrderBy(o => o.Name);
-                m.SortField = "name";
-                m.SortOrder = "asc";
-            }
-
-            m.Count = res.Count();
-            m.Items = res
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+            m.Count = await res.CountAsync();
+            m.Items = await res
+                .Skip((m.PageIndex - 1) * m.PageSize)
+                .Take(m.PageSize)
+                .ToListAsync();
 
             return m;
         }
-
         public NewspapersList ListData(NewspapersList m)
         {
             /*m.RegionsList = _region.GetCache();*/
             return m;
         }
-        public NewspaperEdit Save(NewspaperEdit m)
+        public async Task<NewspaperEdit> SaveAsync(NewspaperEdit m)
         {
-            var Newspaper = _context.Newspapers.FirstOrDefault(c => c.Id == m.Id);
+            var Newspaper = await _context.Newspapers.FirstOrDefaultAsync(c => c.Id == m.Id);
             if (Newspaper == null)
                 Newspaper = new Newspaper();
 
             Newspaper.Name = m.Name;
 
             _context.Update(Newspaper);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<Newspaper>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.Newspapers.FirstOrDefault(c => c.Id == id);
+            var m = await _context.Newspapers.FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            (this as ICache<Newspaper>).SetCache(_context);
+
             return true;
         }
 
-        #region Cache
-        private readonly string CacheName = "NewspapersManager.List";
-        private readonly string CacheNameTimer = "NewspapersManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public IList<Newspaper> GetCache(int Timer = 600)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.Newspapers.OrderBy(o => o.Name).AsNoTracking().ToList(), Timer);
-            }
+            return (this as ICache<Newspaper>).GetCache(_context, Timer);
         }
-
-        public List<Newspaper> GetCache(int Timer = 600)
-        {
-            List<Newspaper> List = new List<Newspaper>();
-            lock (CacheLock)
-            {
-                if (!_cache.TryGetValue(CacheName, out List))
-                {
-                    List = _context.Newspapers.OrderBy(o => o.Name).ToList();
-                    SetCache(List, Timer);
-                }
-            }
-            return List;
-        }
-
-        private void SetCache(List<Newspaper> List, int Timer = 600)
-        {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
-        }
-        #endregion
     }
 }

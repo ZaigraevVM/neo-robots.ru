@@ -27,6 +27,9 @@ namespace SMI.Areas.Admin.Models
         [Display(Name = "Заголовок")]
         public string Title { get; set; }
 
+        [Display(Name = "Path")]
+        public string Path { get; set; }
+
         [Display(Name = "Автор")]
         public int? AuthorId { get; set; }
 
@@ -36,6 +39,10 @@ namespace SMI.Areas.Admin.Models
         [Display(Name = "Дата")]
         public DateTime? Date { get; set; }
 
+        [Required(ErrorMessage = "Требуется поле 'Краткое описание'")]
+        [Display(Name = "Краткое описание")]
+        public string Intro { get; set; }
+
         [Required(ErrorMessage = "Требуется поле Текст.")]
         [Display(Name = "Текст")]
         public string Text { get; set; }
@@ -43,15 +50,18 @@ namespace SMI.Areas.Admin.Models
         [Display(Name = "Издания")]
         public int? NewspapersId { get; set; }
 
+        [Display(Name = "Опубликовать")]
+        public bool IsPublish { get; set; }
+        public string History { get; set; }
 
         [Display(Name = "Хэш-тэги")]
         public List<HashTag> HashTags { get; set; }
 
         [Display(Name = "Город")]
-        public List<City> NewsCities { get; set; }
+        public List<City> Cities { get; set; }
 
         [Display(Name = "Регион")]
-        public List<Region> NewsRegions { get; set; }
+        public List<Region> Regions { get; set; }
 
         [Display(Name = "Тема")]
         public List<Theme> Themes { get; set; }
@@ -78,5 +88,27 @@ namespace SMI.Areas.Admin.Models
             get { return _themesIds ?? Array.Empty<int>(); }
             set { _themesIds = value; }
         }
+
+        #region NewsRegions
+        private int[] _regionsIds;
+
+        [Display(Name = "Регионы")]
+        public int[] RegionsIds
+        {
+            get { return _regionsIds ?? Array.Empty<int>(); }
+            set { _regionsIds = value; }
+        }
+        #endregion
+
+        #region NewsCities
+        private int[] _citiesIds;
+
+        [Display(Name = "Города")]
+        public int[] CitiesIds
+        {
+            get { return _citiesIds ?? Array.Empty<int>(); }
+            set { _citiesIds = value; }
+        }
+        #endregion
     }
 }

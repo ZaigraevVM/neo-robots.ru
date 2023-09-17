@@ -27,9 +27,10 @@ namespace SMI.Controllers
             return View(m);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Theme(ThemePage m)
         {
-            return View();
+            m = _newsMgr.GetThemePage(m);
+            return View(m);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

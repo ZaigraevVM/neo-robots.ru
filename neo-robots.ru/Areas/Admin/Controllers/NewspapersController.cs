@@ -7,11 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace SMI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-	[Authorize]
+	[Authorize(Roles = "admin")]
 	public class NewspapersController : Controller
     {
 		private readonly INewspapersManager _mgr;
@@ -22,9 +23,9 @@ namespace SMI.Areas.Admin.Controllers
 			_view = view;
 		}
 
-		public ActionResult Index(NewspapersList m)
+		public async Task<IActionResult> IndexAsync(NewspapersList m)
 		{
-			m = _mgr.GetList(m);
+			m = await _mgr.GetListAsync(m);
 
 			if ("ajax" == m.Type)
 				return Json(new
@@ -37,11 +38,11 @@ namespace SMI.Areas.Admin.Controllers
 			return View("List", _mgr.ListData(m));
 		}
 
-		public ActionResult Remove(int Id)
+		public async Task<IActionResult> RemoveAsync(int Id)
 		{
 			try
 			{
-				_mgr.Delete(Id);
+				await _mgr.DeleteAsync(Id);
 				if (Request.Headers["Referer"] != "")
 					return Redirect(Request.Headers["Referer"]);
 			}
@@ -49,35 +50,35 @@ namespace SMI.Areas.Admin.Controllers
 			return RedirectToAction("Index");
 		}
 
-		public ActionResult Create()
+		public async Task<IActionResult> CreateAsync()
 		{
 			var m = new NewspaperEdit()
 			{
 				ReturnTo = Request.Headers["Referer"]
 			};
 
-			return View("Edit", _mgr.EditorData(m));
+			return View("Edit", await _mgr.EditorDataAsync(m));
 		}
 
-		public ActionResult Edit(int Id)
+		public async Task<IActionResult> EditAsync(int Id)
 		{
-			var m = _mgr.Get(Id);
+			var m = await _mgr.GetAsync(Id);
 
 			if (m == null) return NotFound("Error");
 
 			m.ReturnTo = Request.Headers["Referer"];
 
-			return View("Edit", _mgr.EditorData(m));
+			return View("Edit", await _mgr.EditorDataAsync(m));
 		}
 
 		[HttpPost]
-		public ActionResult Save(NewspaperEdit m)
+		public async Task<IActionResult> SaveAsync(NewspaperEdit m)
 		{
 			if (ModelState.IsValid)
 			{
 				try
 				{
-					_mgr.Save(m);
+                    await _mgr.SaveAsync(m);
 					return Redirect(m.GetReturnTo);
 				}
 				catch (Exception ex)
@@ -86,14 +87,14 @@ namespace SMI.Areas.Admin.Controllers
 				}
 			}
 
-			m = _mgr.EditorData(m);
+			m = await _mgr.EditorDataAsync(m);
 
 			return View("Edit", m);
 		}
 
-		public ActionResult GetList()
+		public async Task<IActionResult> GetListAsync()
 		{
-			List<Newspaper> NewspaperList = _mgr.GetCache();
+			IList<Newspaper> NewspaperList = _mgr.GetCache();
 			return Json(new
 			{
 				Newspaper = NewspaperList.Select(s => new { s.Id, s.Name })

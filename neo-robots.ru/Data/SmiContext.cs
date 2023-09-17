@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using SMI.Data.Entities.Properties;
+using SMI.Data.Maps;
 
 #nullable disable
 
@@ -9,14 +16,20 @@ namespace SMI.Data.Entities
 {
     public partial class SmiContext : IdentityDbContext
     {
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public SmiContext()
         {
         }
 
-        public SmiContext(DbContextOptions<SmiContext> options)
+        public SmiContext(DbContextOptions<SmiContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
-            //Database.Migrate();
+            Database.Migrate();
+            _httpContextAccessor = httpContextAccessor;
+            SavingChanges += Auditable_SavingChanges;
+            SavingChanges += History_SavingChanges;
         }
 
         public virtual DbSet<Author> Authors { get; set; }
@@ -32,6 +45,10 @@ namespace SMI.Data.Entities
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Region> Regions { get; set; }
         public virtual DbSet<Theme> Themes { get; set; }
+        public virtual DbSet<AggregatorSource> AggregatorSources { get; set; }
+        public virtual DbSet<AggregatorNews> AggregatorNews { get; set; }
+        public virtual DbSet<AggregatorList> AggregatorLists { get; set; }
+        public virtual DbSet<AggregatorPage> AggregatorPages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,182 +65,75 @@ namespace SMI.Data.Entities
 
             modelBuilder.HasAnnotation("Relational:Collation", "Cyrillic_General_CI_AS");
 
-            modelBuilder.Entity<Author>(entity =>
-            {
-                entity.Property(e => e.FirstName)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LastName)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<City>(entity =>
-            {
-                entity.HasKey(k => k.Id);
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RegionId).ValueGeneratedOnAdd();
-
-                entity.HasOne(d => d.Region)
-                    .WithMany(p => p.Cities)
-                    .HasForeignKey(d => d.RegionId);
-            });
-
-            modelBuilder.Entity<HashTag>(entity =>
-            {
-                entity.HasKey(k => k.Id);
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<HashTagsNews>(entity =>
-            {
-                entity.HasKey(e => new { e.HashTagId, e.NewsId });
-
-                entity.HasOne(d => d.HashTag)
-                    .WithMany(p => p.HashTagsNews)
-                    .HasForeignKey(d => d.HashTagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HashTagsNews_HashTags");
-
-                entity.HasOne(d => d.News)
-                    .WithMany(p => p.HashTagsNews)
-                    .HasForeignKey(d => d.NewsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HashTagsNews_News");
-            });
-
-            modelBuilder.Entity<HashTagsTheme>(entity =>
-            {
-                entity.HasKey(e => new { e.HashTagId, e.ThemeId });
-
-                entity.HasOne(d => d.HashTag)
-                    .WithMany(p => p.HashTagsThemes)
-                    .HasForeignKey(d => d.HashTagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HashTagsThemes_HashTags");
-
-                entity.HasOne(d => d.Theme)
-                    .WithMany(p => p.HashTagsThemes)
-                    .HasForeignKey(d => d.ThemeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HashTagsThemes_Themes");
-            });
-
-            modelBuilder.Entity<News>(entity =>
-            {
-                entity.Property(e => e.Date).HasColumnType("datetime");
-
-                entity.Property(e => e.Text).HasColumnType("text");
-
-                entity.Property(e => e.Title)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.Author)
-                    .WithMany(p => p.News)
-                    .HasForeignKey(d => d.AuthorId)
-                    .HasConstraintName("FK_News_Authors");
-
-                entity.HasOne(d => d.Newspapers)
-                    .WithMany(p => p.News)
-                    .HasForeignKey(d => d.NewspapersId)
-                    .HasConstraintName("FK_News_Newspapers");
-
-                entity.HasOne(d => d.Photo)
-                    .WithMany(p => p.News)
-                    .HasForeignKey(d => d.PhotoId)
-                    .HasConstraintName("FK_News_Photos");
-            });
-
-            modelBuilder.Entity<NewsCities>(entity =>
-            {
-                entity.HasKey(e => new { e.NewsId, e.CityId });
-
-                entity.HasOne(d => d.Cities)
-                    .WithMany(p => p.NewsCities)
-                    .HasForeignKey(d => d.CityId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NewsCities_Cities");
-
-                entity.HasOne(d => d.News)
-                    .WithMany(p => p.NewsCities)
-                    .HasForeignKey(d => d.NewsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NewsCities_News");
-            });
-
-            modelBuilder.Entity<NewsRegion>(entity =>
-            {
-                entity.HasKey(e => new { e.NewsId, e.RegionId });
-
-                entity.HasOne(d => d.News)
-                    .WithMany(p => p.NewsRegions)
-                    .HasForeignKey(d => d.NewsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NewsRegions_News");
-
-                entity.HasOne(d => d.Region)
-                    .WithMany(p => p.NewsRegions)
-                    .HasForeignKey(d => d.RegionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NewsRegions_Regions");
-            });
-
-            modelBuilder.Entity<NewsTheme>(entity =>
-            {
-                entity.HasKey(e => new { e.NewsId, e.ThemeId });
-
-                entity.HasOne(d => d.News)
-                    .WithMany(p => p.NewsThemes)
-                    .HasForeignKey(d => d.NewsId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NewsThemes_News");
-
-                entity.HasOne(d => d.Theme)
-                    .WithMany(p => p.NewsThemes)
-                    .HasForeignKey(d => d.ThemeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NewsThemes_Themes");
-            });
-
-            modelBuilder.Entity<Newspaper>(entity =>
-            {
-                entity.HasKey(k => k.Id);
-
-                entity.Property(e => e.Name).HasMaxLength(500);
-            });
-
-            modelBuilder.Entity<Photo>(entity =>
-            {
-                entity.Property(e => e.Name)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FileName)
-                    .HasMaxLength(100);
-            });
-
-            modelBuilder.Entity<Region>(entity =>
-            {
-                entity.Property(e => e.Name)
-                    .HasMaxLength(500)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<Theme>(entity =>
-            {
-                entity.Property(e => e.Name).HasMaxLength(500);
-            });
+            modelBuilder.ApplyConfiguration(new AggregatorNewsMap());
+            modelBuilder.ApplyConfiguration(new AggregatorListMap());
+            modelBuilder.ApplyConfiguration(new AggregatorPageMap());
+            modelBuilder.ApplyConfiguration(new AggregatorSourceMap());
+            modelBuilder.ApplyConfiguration(new AuthorMap());
+            modelBuilder.ApplyConfiguration(new CityMap());
+            modelBuilder.ApplyConfiguration(new HashTagMap());
+            modelBuilder.ApplyConfiguration(new HashTagsNewsMap());
+            modelBuilder.ApplyConfiguration(new HashTagsThemeMap());
+            modelBuilder.ApplyConfiguration(new NewsMap());
+            modelBuilder.ApplyConfiguration(new NewsCitiesMap());
+            modelBuilder.ApplyConfiguration(new NewsRegionMap());
+            modelBuilder.ApplyConfiguration(new NewsThemeMap());
+            modelBuilder.ApplyConfiguration(new NewspaperMap());
+            modelBuilder.ApplyConfiguration(new PhotoMap());
+            modelBuilder.ApplyConfiguration(new RegionMap());
+            modelBuilder.ApplyConfiguration(new ThemeMap());
 
             OnModelCreatingPartial(modelBuilder);
+        }
+
+        private void Auditable_SavingChanges(object sender, SavingChangesEventArgs e)
+        {
+            var entries = ChangeTracker.Entries().Where(x =>
+                x.Entity is IAuditableEntity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+
+            var userName = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
+            foreach (var entry in entries)
+            {
+                var now = DateTime.Now;
+                var entity = (IAuditableEntity)entry.Entity;
+
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = now;
+                    entity.CreatedBy = userName;
+                }
+
+                entity.ModifiedAt = now;
+                entity.ModifiedBy = userName;
+            }
+        }
+
+        private void History_SavingChanges(object sender, SavingChangesEventArgs e)
+        {
+            var entries = ChangeTracker.Entries().Where(x =>
+                x.Entity is IHistory && (x.State == EntityState.Added || x.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var entity = ((IHistory)entry.Entity);
+                var modifiedProperties = entry.Properties
+                    .Where(p => p.IsModified && p.Metadata.Name != "History" &&
+                        (
+                            (p.CurrentValue != null && p.OriginalValue != null && !p.CurrentValue.Equals(p.OriginalValue))
+                            || (p.CurrentValue != null && p.OriginalValue == null)
+                            || (p.CurrentValue == null && p.OriginalValue != null)
+                        )
+                    );
+                if (modifiedProperties.Any(p => p.Metadata.Name != "ModifiedAt"))
+                {
+                    string history = $"{DateTime.Now}{Environment.NewLine}";
+                    foreach (var property in modifiedProperties.OrderBy(p => p.Metadata.Name))
+                    {
+                        history += $"{property.Metadata.Name}: {property.OriginalValue} --->>> {property.CurrentValue}{Environment.NewLine}";
+                    }
+                    entity.History = history + Environment.NewLine + entity.History;
+                }
+            }
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

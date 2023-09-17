@@ -35,7 +35,7 @@
             <tr data-id="@item.Id">
                 <td>@item.Id</td>
                 <td>
-                    <a href="/admin/news/edit/@item.Id">
+                    <a href="/admin/news/edit/@item.Id" class="@(!item.IsPublish ? "text-secondary" : "")">
                         @item.Title
                     </a>
                 </td>
@@ -44,7 +44,7 @@
                 <td></td>
                 <td></td>
                 <td>
-                    <a href="/news/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
+                    <a href="/admin/news/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
                 </td>
             </tr>
             }

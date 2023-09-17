@@ -7,28 +7,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SMI.Models;
+using Microsoft.Extensions.Logging;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using System.Threading.Tasks;
+using AngleSharp.Dom;
 
 namespace SMI.Managers
 {
-    public interface INewsManager
+    public interface INewsManager : IManager<NewsList, NewsEdit, News>
     {
-        NewsList GetList(NewsList m);
-        NewsList ListData(NewsList m);
-        NewsEdit New();
-        NewsEdit Get(int id);
-        NewsEdit EditorData(NewsEdit m);
-        NewsEdit Save(NewsEdit m);
-        bool Delete(int id);
-        List<News> GetCache(int Timer = 600);
         HomePage GetHomePage(HomePage m);
         NewsPage GetNewsPage(NewsPage m);
+        ThemePage GetThemePage(ThemePage m);
     }
 
-    public class NewsManager : INewsManager
+    public class NewsManager : INewsManager, ICache<News>
     {
-        private readonly SmiContext _context;
+        public IMemoryCache Cache { get; set; }
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         private readonly IAuthorsManager _authors;
         private readonly IPhotosManager _photos;
         private readonly INewspapersManager _newspapers;
@@ -36,12 +33,14 @@ namespace SMI.Managers
         private readonly ICitiesManager _cities;
         private readonly IThemesManager _themes;
         private readonly IHashTagsManager _hashtags;
+        private readonly ILogger<NewsManager> _logger;
+        private readonly SmiContext _context;
         public NewsManager(SmiContext context, IMapper mapper, IMemoryCache cache, IAuthorsManager authors, IPhotosManager photos, INewspapersManager newspapers,
-            IRegionsManager regions, ICitiesManager cities, IThemesManager themes, IHashTagsManager hashtags)
+            IRegionsManager regions, ICitiesManager cities, IThemesManager themes, IHashTagsManager hashtags, ILogger<NewsManager> logger)
         {
+            Cache = cache;
             _context = context;
             _mapper = mapper;
-            _cache = cache;
             _authors = authors;
             _photos = photos;
             _newspapers = newspapers;
@@ -49,22 +48,25 @@ namespace SMI.Managers
             _cities = cities;
             _themes = themes;
             _hashtags = hashtags;
+            _logger = logger;
         }
 
         public NewsEdit New()
         {
             return new NewsEdit();
         }
-        public NewsEdit Get(int id)
+        public async Task<NewsEdit> GetAsync(int id)
         {
-            var news = _context.News
+            var news = await _context.News
                 .Include(n => n.Photo)
                 .Include(n => n.HashTagsNews)
                 .Include(n => n.NewsThemes)
-                .FirstOrDefault(c => c.Id == id);
+                .Include(n => n.NewsRegions)
+                .Include(n => n.NewsCities)
+                .FirstOrDefaultAsync(c => c.Id == id);
             return _mapper.Map<NewsEdit>(news);
         }
-        public NewsEdit EditorData(NewsEdit m)
+        public async Task<NewsEdit> EditorDataAsync(NewsEdit m)
         {
             m.Authors = new List<Author>()
             {
@@ -84,43 +86,22 @@ namespace SMI.Managers
             };
             m.Newspapers.AddRange(_newspapers.GetCache().OrderBy(o => o.Name).ToList());
 
-            m.NewsRegions = _regions.GetCache().OrderBy(r => r.Name).ToList();
-            m.NewsCities = _cities.GetCache().OrderBy(r => r.Name).ToList();
+            m.Regions = _regions.GetCache().OrderBy(r => r.Name).ToList();
+            m.Cities = _cities.GetCache().OrderBy(r => r.Name).ToList();
             m.Themes = _themes.GetCache().OrderBy(r => r.Name).ToList();
             m.HashTags = _hashtags.GetCache().OrderBy(r => r.Name).ToList();
 
             return m;
         }
-        public NewsList GetList(NewsList m)
+        public async Task<NewsList> GetListAsync(NewsList m)
         {
             var res = _context.News
-                .Where(w => (m.Search == "" || w.Title.Contains(m.Search)));
+                .Where(w => (m.Search == "" || w.Title.Contains(m.Search)))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Title);
-                else
-                    res = res.OrderByDescending(o => o.Title);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            else
-            {
-                res = res.OrderBy(o => o.Title);
-                m.SortField = "name";
-                m.SortOrder = "asc";
-            }
-
-            m.Count = res.Count();
-            m.Items = res
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+            m.Count = await res.CountAsync();
+            m.Items = await res
+                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToListAsync();
 
             return m;
         }
@@ -130,24 +111,31 @@ namespace SMI.Managers
             /*m.RegionsList = _region.GetCache();*/
             return m;
         }
-        public NewsEdit Save(NewsEdit m)
+
+        public async Task<NewsEdit> SaveAsync(NewsEdit m)
         {
-            var news = _context.News
+            m.Path = GetPath(m.Title, m.Id);
+            var news = await _context.News
                 .Include(n => n.HashTagsNews)
                 .Include(n => n.NewsThemes)
-                .FirstOrDefault(c => c.Id == m.Id);
+                .Include(n => n.NewsRegions)
+                .Include(n => n.NewsCities)
+                .FirstOrDefaultAsync(c => c.Id == m.Id);
+
             if (news == null)
                 news = new News();
 
             news.Title = m.Title;
             news.Date = m.Date;
+            news.Intro = m.Intro;
             news.Text = m.Text;
             news.PhotoId = m.PhotoId;
-            
+            news.Path = m.Path;
+            news.IsPublish = m.IsPublish;
             news.AuthorId = m.AuthorId == 0 ? null : m.AuthorId;
             news.NewspapersId = m.NewspapersId == 0 ? null : m.NewspapersId;
 
-            var hashtagsList = _context.HashTags.Where(w => m.HashTagsIds.Contains(w.Id)).ToList();
+            var hashtagsList = await _context.HashTags.Where(w => m.HashTagsIds.Contains(w.Id)).ToListAsync();
             news.HashTagsNews.Clear();
             foreach (var id in m.HashTagsIds)
             {
@@ -156,7 +144,7 @@ namespace SMI.Managers
                     news.HashTagsNews.Add(new HashTagsNews() { HashTagId = id });
             }
 
-            var themesList = _context.Themes.Where(w => m.ThemesIds.Contains(w.Id)).ToList();
+            var themesList = await _context.Themes.Where(w => m.ThemesIds.Contains(w.Id)).ToListAsync();
             news.NewsThemes.Clear();
             foreach (var id in m.ThemesIds)
             {
@@ -165,23 +153,46 @@ namespace SMI.Managers
                     news.NewsThemes.Add(new NewsTheme() { ThemeId = id });
             }
 
+            var regionsList = await _context.Regions.Where(w => m.RegionsIds.Contains(w.Id)).ToListAsync();
+            news.NewsRegions.Clear();
+            foreach (var id in m.RegionsIds)
+            {
+                var entity = regionsList.FirstOrDefault(f => f.Id == id);
+                if (entity != null)
+                    news.NewsRegions.Add(new NewsRegion() { RegionId = id });
+            }
+
+            var citiesList = await _context.Cities.Where(w => m.CitiesIds.Contains(w.Id)).ToListAsync();
+            news.NewsCities.Clear();
+            foreach (var id in m.CitiesIds)
+            {
+                var entity = citiesList.FirstOrDefault(f => f.Id == id);
+                if (entity != null)
+                    news.NewsCities.Add(new NewsCities() { CityId = id });
+            }
+
             _context.Update(news);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             
             m.Id = news.Id;
 
-            SetCache();
+            (this as ICache<News>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.News.FirstOrDefault(c => c.Id == id);
+            var m = await _context.News
+                .Include(n => n.HashTagsNews)
+                .Include(n => n.NewsThemes)
+                .Include(n => n.NewsRegions)
+                .Include(n => n.NewsCities)
+                .FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -315,7 +326,6 @@ namespace SMI.Managers
             return homePage;
         }
 
-
         public NewsPage GetNewsPage(NewsPage m)
         {
             var newsPage = new NewsPage();
@@ -336,43 +346,50 @@ namespace SMI.Managers
             return newsPage;
         }
 
-        #region Cache
-        private readonly string CacheName = "NewsManager.List";
-        private readonly string CacheNameTimer = "NewsManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public ThemePage GetThemePage(ThemePage m)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.News.OrderBy(o => o.Id).AsNoTracking().ToList(), Timer);
-            }
+            var themePage = new ThemePage();
+            themePage.News = _context.News
+                .Include(n => n.Photo)
+                .Include(n => n.NewsThemes)
+                .ThenInclude(nt => nt.Theme)
+                .Include(n => n.Newspapers)
+                .First(n => n.Id == m.Id);
+
+            themePage.NewsSection1News = _context.News
+                .Include(n => n.Photo)
+                .OrderByDescending(n => n.Date)
+                .ThenByDescending(n => n.Id)
+                .Take(10)
+                .ToList();
+
+            return themePage;
         }
 
-        public List<News> GetCache(int Timer = 600)
+        private string GetPath(string title, int id)
         {
-            List<News> List = new List<News>();
-            lock (CacheLock)
+            string aliasBase = title.ToPath();
+            string aliasReturn = aliasBase;
+            bool run = true;
+            int count = 0;
+            while (run)
             {
-                if (!_cache.TryGetValue(CacheName, out List))
+                run = false;
+                count++;
+                var news = _context.News.FirstOrDefault(f => f.Path == aliasReturn && f.Id != id);
+                if (news != null && news.Id != id)
                 {
-                    List = _context.News.OrderBy(o => o.Id).ToList();
-                    SetCache(List, Timer);
+                    run = true;
+                    aliasReturn = aliasBase + "-" + count;
                 }
             }
-            return List;
+
+            return aliasReturn;
         }
 
-        private void SetCache(List<News> List, int Timer = 600)
+        public IList<News> GetCache(int Timer = 600)
         {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
+            return (this as ICache<News>).GetCache(_context, Timer);
         }
-        #endregion
     }
 }

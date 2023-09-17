@@ -13,8 +13,10 @@
                     <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("name")" href="javascript:void(0);"
                        class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("name")"></span>Название</a>
                 </th>
-
-
+                <th>
+                    <a data-sortfield="sorting" data-sortorder="@Model.SortFieldForLink("sorting")" href="javascript:void(0);"
+                       class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("sorting")"></span>Сортировка</a>
+                </th>
                 <th width="50"></th>
             </tr>
         </thead>
@@ -29,9 +31,11 @@
                             @item.Name
                         </a>
                     </td>
-
                     <td>
-                        <a href="/themes/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
+                        @item.Sorting
+                    </td>
+                    <td>
+                        <a href="/admin/themes/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
                     </td>
                 </tr>
             }

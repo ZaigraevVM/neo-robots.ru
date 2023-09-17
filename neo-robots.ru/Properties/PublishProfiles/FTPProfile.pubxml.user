@@ -8,11 +8,11 @@
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAR95DWzpaKUqafIsUaDL7ZgAAAAACAAAAAAAQZgAAAAEAACAAAADqWBmiRE1rvW4RDWPWFBUugW7Du0OP0+gTsvp8tlvTRQAAAAAOgAAAAAIAACAAAADZV5RTML+Qm4zCf7jNbhDKG3kQCRAnOeRbInN7mO5uyDAAAAB0JrYnehwOS+vBglgxR/I3IyFXS+ZlgOR48gRjx1w6LRKCCu86tFj/Q4YanajxwsdAAAAA0qw6y91h6BsOC4ivTSrq7Q2JfHm3IrP1ZDb2SPOtzQw3p9xvJk539UvjhOvV/pBnkX9v7GCWrDOs+OOaBN1Rtw==</EncryptedPassword>
     <_PublishTargetUrl>ftp://37.140.192.97/httpdocs/neo-robots.ru</_PublishTargetUrl>
-    <History>True|2022-06-21T13:56:41.5338464Z;False|2022-06-21T15:24:12.1809828+03:00;False|2022-06-21T15:13:59.1792889+03:00;True|2022-06-18T21:16:44.4989356+03:00;False|2022-06-18T15:41:48.9919413+03:00;</History>
+    <History>True|2022-06-18T18:16:44.4989356Z;False|2022-06-18T15:41:48.9919413+03:00;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>06/21/2022 13:44:23</publishTime>
+      <publishTime>06/18/2022 12:18:53</publishTime>
     </File>
     <File Include="appsettings.json">
       <publishTime>06/18/2022 12:19:36</publishTime>
@@ -144,25 +144,25 @@
       <publishTime>11/15/2019 08:53:46</publishTime>
     </File>
     <File Include="SMI.deps.json">
-      <publishTime>06/21/2022 15:32:52</publishTime>
+      <publishTime>06/18/2022 19:49:55</publishTime>
     </File>
     <File Include="SMI.dll">
-      <publishTime>06/21/2022 15:32:50</publishTime>
+      <publishTime>06/18/2022 19:49:53</publishTime>
     </File>
     <File Include="SMI.exe">
-      <publishTime>06/21/2022 15:32:50</publishTime>
+      <publishTime>06/18/2022 19:49:53</publishTime>
     </File>
     <File Include="SMI.pdb">
-      <publishTime>06/21/2022 15:32:50</publishTime>
+      <publishTime>06/18/2022 19:49:53</publishTime>
     </File>
     <File Include="SMI.runtimeconfig.json">
       <publishTime>06/18/2022 12:21:34</publishTime>
     </File>
     <File Include="SMI.Views.dll">
-      <publishTime>06/21/2022 15:32:51</publishTime>
+      <publishTime>06/18/2022 19:49:55</publishTime>
     </File>
     <File Include="SMI.Views.pdb">
-      <publishTime>06/21/2022 15:32:51</publishTime>
+      <publishTime>06/18/2022 19:49:55</publishTime>
     </File>
     <File Include="System.Configuration.ConfigurationManager.dll">
       <publishTime>11/15/2019 08:37:04</publishTime>
@@ -183,7 +183,7 @@
       <publishTime>11/15/2019 08:37:42</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>06/21/2022 15:32:58</publishTime>
+      <publishTime>06/18/2022 19:50:05</publishTime>
     </File>
     <File Include="wwwroot/css/admin.css">
       <publishTime>06/18/2022 12:50:48</publishTime>
@@ -5058,172 +5058,172 @@
       <publishTime>11/22/2021 16:03:58</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-astronaut.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-check.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-circle.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-clock.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-cog.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-edit.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-friends.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-graduate.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-injured.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-lock.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-md.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-minus.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-ninja.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-nurse.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-plus.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-secret.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-shield.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-slash.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-tag.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-tie.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user-times.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/user.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/users-cog.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/users-slash.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/users.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/utensil-spoon.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/utensils.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vector-square.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/venus-double.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/venus-mars.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/venus.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vest-patches.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vest.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vial.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vials.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/video-slash.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/video.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vihara.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/virus-slash.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/virus.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/viruses.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/voicemail.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/volleyball-ball.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/volume-down.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/volume-mute.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/volume-off.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/volume-up.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vote-yea.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/vr-cardboard.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/walking.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/wallet.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/warehouse.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/water.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/wave-square.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/weight-hanging.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/fontawesome/svgs/solid/weight.svg">
-      <publishTime>11/22/2021 16:04:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/Identity/css/site.css">
       <publishTime>03/17/2021 23:16:26</publishTime>
@@ -5364,7 +5364,7 @@
       <publishTime>03/01/2022 22:18:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/originals/12a5cc86-a2b7-45c1-aa67-557071e29031.jpg">
-      <publishTime>02/23/2022 14:56:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/originals/13301fcf-90e4-468d-af01-eb487138d998.jpg">
       <publishTime>02/23/2022 14:45:02</publishTime>
@@ -5400,7 +5400,7 @@
       <publishTime>05/19/2022 14:50:12</publishTime>
     </File>
     <File Include="wwwroot/images/news/originals/1f544005-9341-4ea2-9b5b-a98b380200d0.jpg">
-      <publishTime>02/13/2022 19:19:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/originals/251f33ac-221a-418b-a8c5-4de707289d14.jpg">
       <publishTime>02/23/2022 14:30:20</publishTime>
@@ -5565,7 +5565,7 @@
       <publishTime>02/23/2022 14:38:08</publishTime>
     </File>
     <File Include="wwwroot/images/news/originals/9585f0e2-39cf-46ef-9553-fdba7e6cac5b.jpg">
-      <publishTime>02/28/2022 20:25:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/originals/95905be5-e471-41e8-892a-c0199cfe3d7f.jpg">
       <publishTime>05/19/2022 14:52:22</publishTime>
@@ -5730,7 +5730,7 @@
       <publishTime>03/01/2022 22:18:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w1000x523/12a5cc86-a2b7-45c1-aa67-557071e29031.jpg">
-      <publishTime>02/23/2022 14:56:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w1000x523/13301fcf-90e4-468d-af01-eb487138d998.jpg">
       <publishTime>02/23/2022 14:45:02</publishTime>
@@ -5766,7 +5766,7 @@
       <publishTime>05/19/2022 14:50:12</publishTime>
     </File>
     <File Include="wwwroot/images/news/w1000x523/1f544005-9341-4ea2-9b5b-a98b380200d0.jpg">
-      <publishTime>02/13/2022 19:19:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w1000x523/251f33ac-221a-418b-a8c5-4de707289d14.jpg">
       <publishTime>02/23/2022 14:30:20</publishTime>
@@ -5928,7 +5928,7 @@
       <publishTime>02/23/2022 14:38:08</publishTime>
     </File>
     <File Include="wwwroot/images/news/w1000x523/9585f0e2-39cf-46ef-9553-fdba7e6cac5b.jpg">
-      <publishTime>02/28/2022 20:25:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w1000x523/95905be5-e471-41e8-892a-c0199cfe3d7f.jpg">
       <publishTime>05/19/2022 14:52:22</publishTime>
@@ -6093,7 +6093,7 @@
       <publishTime>03/01/2022 22:18:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w100x100/12a5cc86-a2b7-45c1-aa67-557071e29031.jpg">
-      <publishTime>02/23/2022 14:56:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w100x100/13301fcf-90e4-468d-af01-eb487138d998.jpg">
       <publishTime>02/23/2022 14:45:02</publishTime>
@@ -6129,7 +6129,7 @@
       <publishTime>05/19/2022 14:50:12</publishTime>
     </File>
     <File Include="wwwroot/images/news/w100x100/1f544005-9341-4ea2-9b5b-a98b380200d0.jpg">
-      <publishTime>02/13/2022 19:19:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w100x100/251f33ac-221a-418b-a8c5-4de707289d14.jpg">
       <publishTime>02/23/2022 14:30:20</publishTime>
@@ -6291,7 +6291,7 @@
       <publishTime>02/23/2022 14:38:08</publishTime>
     </File>
     <File Include="wwwroot/images/news/w100x100/9585f0e2-39cf-46ef-9553-fdba7e6cac5b.jpg">
-      <publishTime>02/28/2022 20:25:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w100x100/95905be5-e471-41e8-892a-c0199cfe3d7f.jpg">
       <publishTime>05/19/2022 14:52:22</publishTime>
@@ -6453,7 +6453,7 @@
       <publishTime>03/01/2022 22:18:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w200x150/12a5cc86-a2b7-45c1-aa67-557071e29031.jpg">
-      <publishTime>02/23/2022 14:56:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w200x150/13301fcf-90e4-468d-af01-eb487138d998.jpg">
       <publishTime>02/23/2022 14:45:02</publishTime>
@@ -6489,7 +6489,7 @@
       <publishTime>05/19/2022 14:50:12</publishTime>
     </File>
     <File Include="wwwroot/images/news/w200x150/1f544005-9341-4ea2-9b5b-a98b380200d0.jpg">
-      <publishTime>02/13/2022 19:19:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w200x150/251f33ac-221a-418b-a8c5-4de707289d14.jpg">
       <publishTime>02/23/2022 14:30:20</publishTime>
@@ -6651,7 +6651,7 @@
       <publishTime>02/23/2022 14:38:08</publishTime>
     </File>
     <File Include="wwwroot/images/news/w200x150/9585f0e2-39cf-46ef-9553-fdba7e6cac5b.jpg">
-      <publishTime>02/28/2022 20:25:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w200x150/95905be5-e471-41e8-892a-c0199cfe3d7f.jpg">
       <publishTime>05/19/2022 14:52:22</publishTime>
@@ -6813,7 +6813,7 @@
       <publishTime>03/01/2022 22:18:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w450x150/12a5cc86-a2b7-45c1-aa67-557071e29031.jpg">
-      <publishTime>02/23/2022 14:56:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w450x150/13301fcf-90e4-468d-af01-eb487138d998.jpg">
       <publishTime>02/23/2022 14:45:02</publishTime>
@@ -6849,7 +6849,7 @@
       <publishTime>05/19/2022 14:50:12</publishTime>
     </File>
     <File Include="wwwroot/images/news/w450x150/1f544005-9341-4ea2-9b5b-a98b380200d0.jpg">
-      <publishTime>02/13/2022 19:19:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w450x150/251f33ac-221a-418b-a8c5-4de707289d14.jpg">
       <publishTime>02/23/2022 14:30:20</publishTime>
@@ -7011,7 +7011,7 @@
       <publishTime>02/23/2022 14:38:08</publishTime>
     </File>
     <File Include="wwwroot/images/news/w450x150/9585f0e2-39cf-46ef-9553-fdba7e6cac5b.jpg">
-      <publishTime>02/28/2022 20:25:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w450x150/95905be5-e471-41e8-892a-c0199cfe3d7f.jpg">
       <publishTime>05/19/2022 14:52:22</publishTime>
@@ -7173,7 +7173,7 @@
       <publishTime>03/01/2022 22:18:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w500x300/12a5cc86-a2b7-45c1-aa67-557071e29031.jpg">
-      <publishTime>02/23/2022 14:56:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w500x300/13301fcf-90e4-468d-af01-eb487138d998.jpg">
       <publishTime>02/23/2022 14:45:02</publishTime>
@@ -7209,7 +7209,7 @@
       <publishTime>05/19/2022 14:50:12</publishTime>
     </File>
     <File Include="wwwroot/images/news/w500x300/1f544005-9341-4ea2-9b5b-a98b380200d0.jpg">
-      <publishTime>02/13/2022 19:19:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w500x300/251f33ac-221a-418b-a8c5-4de707289d14.jpg">
       <publishTime>02/23/2022 14:30:20</publishTime>
@@ -7371,7 +7371,7 @@
       <publishTime>02/23/2022 14:38:08</publishTime>
     </File>
     <File Include="wwwroot/images/news/w500x300/9585f0e2-39cf-46ef-9553-fdba7e6cac5b.jpg">
-      <publishTime>02/28/2022 20:25:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/images/news/w500x300/95905be5-e471-41e8-892a-c0199cfe3d7f.jpg">
       <publishTime>05/19/2022 14:52:22</publishTime>
@@ -7638,7 +7638,7 @@
       <publishTime>05/19/2022 14:49:40</publishTime>
     </File>
     <File Include="wwwroot/images/news/w890x534/e771653a-e0b6-459b-8f29-3d1e95d5b475.jpg">
-      <publishTime>05/19/2022 15:05:00</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="wwwroot/js/admin/catalogs.js">
       <publishTime>10/24/2021 10:44:16</publishTime>

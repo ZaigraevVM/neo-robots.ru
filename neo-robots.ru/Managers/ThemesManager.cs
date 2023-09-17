@@ -6,68 +6,46 @@ using SMI.Areas.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using System.Threading.Tasks;
 
 namespace SMI.Managers
 {
-    public interface IThemesManager
-    {
-        ThemesList GetList(ThemesList m);
-        ThemesList ListData(ThemesList m);
-        ThemeEdit New();
-        ThemeEdit Get(int id);
-        ThemeEdit EditorData(ThemeEdit m);
-        ThemeEdit Save(ThemeEdit m);
-        bool Delete(int id);
-        List<Theme> GetCache(int Timer = 600);
-    }
+    public interface IThemesManager : IManager<ThemesList, ThemeEdit, Theme> { }
 
-    public class ThemesManager : IThemesManager
+    public class ThemesManager : IThemesManager, ICache<Theme>
     {
+        public IMemoryCache Cache { get; set; }
         private readonly SmiContext _context;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         public ThemesManager(SmiContext context, IMapper mapper, IMemoryCache cache)
         {
             _context = context;
             _mapper = mapper;
-            _cache = cache;
+            Cache = cache;
         }
 
         public ThemeEdit New()
         {
             return new ThemeEdit();
         }
-        public ThemeEdit Get(int id)
+        public async Task<ThemeEdit> GetAsync(int id)
         {
-            return _mapper.Map<ThemeEdit>(_context.Themes.FirstOrDefault(c => c.Id == id));
+            return _mapper.Map<ThemeEdit>(await _context.Themes.FirstOrDefaultAsync(c => c.Id == id));
         }
-        public ThemeEdit EditorData(ThemeEdit m)
+        public async Task<ThemeEdit> EditorDataAsync(ThemeEdit m)
         {
             return m;
         }
-        public ThemesList GetList(ThemesList m)
+        public async Task<ThemesList> GetListAsync(ThemesList m)
         {
             var res = _context.Themes
-                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)));
+                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Name);
-                else
-                    res = res.OrderByDescending(o => o.Name);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            m.Count = res.Count();
-            m.Items = res
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+            m.Count = await res.CountAsync();
+            m.Items = await res.Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToListAsync();
 
             return m;
         }
@@ -76,70 +54,39 @@ namespace SMI.Managers
         {
             return m;
         }
-        public ThemeEdit Save(ThemeEdit m)
+        public async Task<ThemeEdit> SaveAsync(ThemeEdit m)
         {
-            var Theme = _context.Themes.FirstOrDefault(c => c.Id == m.Id);
+            var Theme = await _context.Themes.FirstOrDefaultAsync(c => c.Id == m.Id);
             if (Theme == null)
                 Theme = new Theme();
-
-            
+                        
             Theme.Name = m.Name;
+            Theme.Sorting = m.Sorting;
 
             _context.Update(Theme);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<Theme>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.Themes.FirstOrDefault(c => c.Id == id);
+            var m = await _context.Themes.FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            (this as ICache<Theme>).SetCache(_context);
+
             return true;
         }
 
-        #region Cache
-        private readonly string CacheName = "ThemesManager.List";
-        private readonly string CacheNameTimer = "ThemesManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public IList<Theme> GetCache(int Timer = 600)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.Themes.OrderBy(o => o.Name).AsNoTracking().ToList(), Timer);
-            }
+            return (this as ICache<Theme>).GetCache(_context, Timer);
         }
-
-        public List<Theme> GetCache(int Timer = 600)
-        {
-            List<Theme> List = new List<Theme>();
-            lock (CacheLock)
-            {
-                if (!_cache.TryGetValue(CacheName, out List))
-                {
-                    List = _context.Themes.OrderBy(o => o.Name).ToList();
-                    SetCache(List, Timer);
-                }
-            }
-            return List;
-        }
-
-        private void SetCache(List<Theme> List, int Timer = 600)
-        {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
-        }
-        #endregion
     }
 }

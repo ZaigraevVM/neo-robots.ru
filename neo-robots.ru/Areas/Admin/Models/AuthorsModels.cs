@@ -28,10 +28,10 @@ namespace SMI.Areas.Admin.Models
 		[Required(ErrorMessage = "Требуется поле Фамилия.")]
 		[Display(Name = "Фамилия")]
 		public string LastName { get; set; }
+        public string History { get; set; }
 
 
-
-		public List<News> News { get; set; }
+        public List<News> News { get; set; }
 		public List<Author> Items { get; set; }
 	}
 }

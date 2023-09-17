@@ -1,49 +1,44 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using SMI.Data.Entities;
 using SMI.Areas.Admin.Models;
+using SMI.Code.Extensions;
+using SMI.Data.Entities;
+using SMI.Managers.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SMI.Managers
 {
-    public interface ICitiesManager
+    public interface ICitiesManager : IManager<CitiesList, CityEdit, City>
     {
-        CitiesList GetList(CitiesList m);
-        CitiesList ListData(CitiesList m);
-        CityEdit New();
-        CityEdit Get(int id);
-        CityEdit EditorData(CityEdit m);
-        CityEdit Save(CityEdit m);
-        bool Delete(int id);
-        List<City> GetCache(int Timer = 600);
+        Task<IList<City>> FilteredByRegionsAsync(string filter);
     }
-    
-    public class CitiesManager : ICitiesManager
+
+    public class CitiesManager : ICitiesManager, ICache<City>
     {
+        public IMemoryCache Cache { get; set; }
         private readonly SmiContext _context;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         private readonly IRegionsManager _regions;
         public CitiesManager(SmiContext context, IMapper mapper, IMemoryCache cache, IRegionsManager regions)
         {
+            Cache = cache;
             _context = context;
             _mapper = mapper;
-            _cache = cache;
             _regions = regions;
         }
-
         public CityEdit New()
         {
             return new CityEdit();
         }
-        public CityEdit Get(int id)
+        public async Task<CityEdit> GetAsync(int id)
         {
             return _mapper.Map<CityEdit>(_context.Cities.FirstOrDefault(c => c.Id == id));
         }
-        public CityEdit EditorData(CityEdit m)
+        public async Task<CityEdit> EditorDataAsync(CityEdit m)
         {
             m.RegionsList = new List<Region>()
             {
@@ -53,36 +48,16 @@ namespace SMI.Managers
 
             return m;
         }
-        public CitiesList GetList(CitiesList m)
+        public async Task<CitiesList> GetListAsync(CitiesList m)
         {
             var res = _context.Cities
-                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)) && (m.Select == 0 || w.RegionId == m.Select));
+                .Include(c => c.Region)
+                .Where(w => (m.Search == "" || w.Name.Contains(m.Search)) && (m.Select == 0 || w.RegionId == m.Select))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Name);
-                else
-                    res = res.OrderByDescending(o => o.Name);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            else
-            {
-                res = res.OrderBy(o => o.Name);
-                m.SortField = "name";
-                m.SortOrder = "asc";
-            }
-
-            m.Count = res.Count();
-            m.Items = res
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+            m.Count = await res.CountAsync();
+            m.Items = await res
+                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToListAsync();
 
             return m;
         }
@@ -92,9 +67,9 @@ namespace SMI.Managers
             /*m.RegionsList = _region.GetCache();*/
             return m;
         }
-        public CityEdit Save(CityEdit m)
+        public async Task<CityEdit> SaveAsync(CityEdit m)
         {
-            var city = _context.Cities.FirstOrDefault(c => c.Id == m.Id);
+            var city = await _context.Cities.FirstOrDefaultAsync(c => c.Id == m.Id);
             if (city == null)
                 city = new City();
 
@@ -102,60 +77,35 @@ namespace SMI.Managers
             city.RegionId = m.RegionId;
 
             _context.Update(city);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<City>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.Cities.FirstOrDefault(c => c.Id == id);
+            var m = await _context.Cities.FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            (this as ICache<City>).SetCache(_context);
+
             return true;
         }
 
-        #region Cache
-        private readonly string CacheName = "CitiesManager.List";
-        private readonly string CacheNameTimer = "CitiesManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public async Task<IList<City>> FilteredByRegionsAsync(string filter)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.Cities.OrderBy(o => o.Name).AsNoTracking().ToList(), Timer);
-            }
+            var regions = filter.Replace("[", "").Replace("]", "").Replace("\"", "").Split(',').Select(m => Convert.ToInt32(m)).ToArray();
+            return await _context.Cities.Where(c => regions.Contains(c.RegionId)).ToListAsync();
         }
 
-        public List<City> GetCache(int Timer = 600)
+        public IList<City> GetCache(int Timer = 600)
         {
-            List<City> List = new List<City>();
-            lock (CacheLock)
-            {
-                if (!_cache.TryGetValue(CacheName, out List))
-                {
-                    List = _context.Cities.OrderBy(o => o.Name).ToList();
-                    SetCache(List, Timer);
-                }
-            }
-            return List;
+            return (this as ICache<City>).GetCache(_context, Timer);
         }
-
-        private void SetCache(List<City> List, int Timer = 600)
-        {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
-        }
-        #endregion
     }
 }

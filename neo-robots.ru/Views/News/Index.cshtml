@@ -13,7 +13,7 @@
 
 <section class="holder mt-5">
     <div class="row mb-5">
-        <div class="col-md-3">
+        <div class="col-md-3 d-none d-lg-block">
             <div class="mb-5 pe-5">
                 <div class="module-inner mb-3">
                     <h5 class="module-title"><span class="module-title-color">Лента</span> новостей</h5>
@@ -26,14 +26,14 @@
                             <a href="/news?id=@news.Id">
                                 <h6 class="headline-news_wrapper">@news.Title</h6>
                             </a>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eleifend molestie felis nec ultrices. </p>
+                            <p>@news.Intro</p>
                         </div>
                     </div>
                 }
             </div>
         </div>
 
-        <div class="col-md-9">
+        <div class="col-md-9 col-sm-12">
             <div class="mb-3">
                 <div class="module-inner my-5">
                     <h3 class="text-center">@Model.News.Title</h3>

@@ -27,7 +27,16 @@ namespace SMI.Areas.Admin.Models
 		public string Name { get; set; }
 		public string FileName { get; set; }
 
-
-		public List<News> News { get; set; }
+        [Display(Name = "Url источника")]
+        public string SourceUrl { get; set; }
+        public string History { get; set; }
+        public List<News> News { get; set; }
 	}
+
+	public class CropModel
+	{
+		public string OriginalUrl { get; set; }
+        public string Type { get; set; }
+        public string FileName { get; set; }
+    }
 }

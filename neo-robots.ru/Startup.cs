@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -6,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SMI.Data;
+using SMI.Code.Extensions;
 using SMI.Data.Entities;
 using SMI.Managers;
-using SMI.Services;
+using SMI.Options;
 
 namespace SMI
 {
@@ -33,26 +32,17 @@ namespace SMI
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SmiContext>();
+            
+            services.Configure<SettingsOption>(Configuration.GetSection("Settings"));
 
-            services.AddAuthentication().AddCookie();
-
-            services.AddScoped<IViewRender, ViewRender>();
-            services.AddAutoMapper(typeof(City).Assembly);
-            services.AddScoped<ICitiesManager, CitiesManager>();
-            services.AddScoped<IAuthorsManager, AuthorsManager>();
-            services.AddScoped<IHashTagsManager, HashTagsManager>();
-            services.AddScoped<INewsManager, NewsManager>();
-            services.AddScoped<INewspapersManager, NewspapersManager>();
-            services.AddScoped<IPhotosManager, PhotosManager>();
-            services.AddScoped<IRegionsManager, RegionsManager>();
-            services.AddScoped<IThemesManager, ThemesManager>();
+            services.DI();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env /*, ICronManager cron*/)
         {
             if (env.IsDevelopment())
             {
@@ -65,6 +55,7 @@ namespace SMI
                 app.UseHsts();
             }
             //app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
 
             app.UseRouting();

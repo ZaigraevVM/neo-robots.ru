@@ -26,9 +26,7 @@ namespace SMI.Areas.Admin.Models
 		[Required(ErrorMessage = "Требуется поле Название.")]
 		[Display(Name = "Название")]
 		public string Name { get; set; }
-
-
-
-		public List<News> News { get; set; }
+        public string History { get; set; }
+        public List<News> News { get; set; }
 	}
 }

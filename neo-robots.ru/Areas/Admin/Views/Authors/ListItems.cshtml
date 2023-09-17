@@ -10,16 +10,13 @@
                        class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("id")"></span>Id</a>
                 </th>
                 <th>
-                    <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("firstname")" href="javascript:void(0);"
+                    <a data-sortfield="firstname" data-sortorder="@Model.SortFieldForLink("firstname")" href="javascript:void(0);"
                        class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("firstname")"></span>Имя</a>
                 </th>
                 <th>
-                    <a data-sortfield="name" data-sortorder="@Model.SortFieldForLink("lastname")" href="javascript:void(0);"
+                    <a data-sortfield="lastname" data-sortorder="@Model.SortFieldForLink("lastname")" href="javascript:void(0);"
                        class="sorting-name"><span class="bi @Model.SortFieldForLinkForClass("lastname")"></span>Фамилия</a>
                 </th>
-                
-
-
                 <th width="50"></th>
             </tr>
         </thead>
@@ -31,12 +28,16 @@
                     <td>@item.Id</td>
                     <td>
                         <a href="/admin/authors/edit/@item.Id">
+                            @item.FirstName
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/admin/authors/edit/@item.Id">
                             @item.LastName
                         </a>
                     </td>
-
                     <td>
-                        <a href="/authors/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
+                        <a href="/admin/authors/remove?id=@item.Id" class="btn btn-link remove"><i class="bi bi-x-lg"></i></a>
                     </td>
                 </tr>
             }

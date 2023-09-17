@@ -3,144 +3,87 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using SMI.Data.Entities;
 using SMI.Areas.Admin.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using SMI.Code.Extensions;
+using SMI.Managers.Core;
+using System.Threading.Tasks;
 
 namespace SMI.Managers
 {
-    public interface IAuthorsManager
-    {
-        AuthorsList GetList(AuthorsList m);
-        AuthorsList ListData(AuthorsList m);
-        AuthorEdit New();
-        AuthorEdit Get(int id);
-        AuthorEdit EditorData(AuthorEdit m);
-        AuthorEdit Save(AuthorEdit m);
-        bool Delete(int id);
-        List<Author> GetCache(int Timer = 600);
-    }
+    public interface IAuthorsManager : IManager<AuthorsList, AuthorEdit, Author> { }
 
-    public class AuthorsManager : IAuthorsManager
+    public class AuthorsManager : IAuthorsManager, ICache<Author>
     {
-        private readonly SmiContext _context;
+        public IMemoryCache Cache { get; set; }
+        public SmiContext _context { get; set; }
+
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
         public AuthorsManager(SmiContext context, IMapper mapper, IMemoryCache cache)
         {
             _context = context;
             _mapper = mapper;
-            _cache = cache;
+            Cache = cache;
         }
-
         public AuthorEdit New()
         {
             return new AuthorEdit();
         }
-        public AuthorEdit Get(int id)
+        public async Task<AuthorEdit> GetAsync(int id)
         {
-            return _mapper.Map<AuthorEdit>(_context.Authors.FirstOrDefault(c => c.Id == id));
+            return _mapper.Map<AuthorEdit>(await _context.Authors.FirstOrDefaultAsync(c => c.Id == id));
         }
-        public AuthorEdit EditorData(AuthorEdit m)
+        public async Task<AuthorEdit> EditorDataAsync(AuthorEdit m)
         {
             return m;
         }
-        public AuthorsList GetList(AuthorsList m)
+        public async Task<AuthorsList> GetListAsync(AuthorsList m)
         {
             var res = _context.Authors
-                .Where(w => (m.Search == "" || w.LastName.Contains(m.Search)));
+                .Where(w => (m.Search == "" || w.LastName.Contains(m.Search)))
+                .OrderBy(m.SortField, m.SortOrder);
 
-            if ("name" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.LastName);
-                else
-                    res = res.OrderByDescending(o => o.LastName);
-            }
-            else if ("id" == m.SortField)
-            {
-                if ("asc" == m.SortOrder)
-                    res = res.OrderBy(o => o.Id);
-                else
-                    res = res.OrderByDescending(o => o.Id);
-            }
-
-            m.Count = res.Count();
-            m.Items = res
-                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToList();
+            m.Count = await res.CountAsync();
+            m.Items = await res
+                .Skip((m.PageIndex - 1) * m.PageSize).Take(m.PageSize).ToListAsync();
 
             return m;
         }
-
         public AuthorsList ListData(AuthorsList m)
         {
             return m;
         }
-        public AuthorEdit Save(AuthorEdit m)
+        public async Task<AuthorEdit> SaveAsync(AuthorEdit m)
         {
-            var author = _context.Authors.FirstOrDefault(c => c.Id == m.Id);
+            var author = await _context.Authors.FirstOrDefaultAsync(c => c.Id == m.Id);
             if (author == null)
                 author = new Author();
 
-            
             author.FirstName = m.FirstName;
             author.LastName = m.LastName;
 
             _context.Update(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            SetCache();
+            (this as ICache<Author>).SetCache(_context);
 
             return m;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var m = _context.Authors.FirstOrDefault(c => c.Id == id);
+            var m = await _context.Authors.FirstOrDefaultAsync(c => c.Id == id);
             if (m == null)
                 return false;
             _context.Remove(m);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            (this as ICache<Author>).SetCache(_context);
             return true;
         }
 
-        #region Cache
-        private readonly string CacheName = "AuthorsManager.List";
-        private readonly string CacheNameTimer = "AuthorsManager.List.Timer";
-        private static readonly object CacheLock = new object();
-        public void SetCache(int Timer = 600)
+        public IList<Author> GetCache(int Timer = 600)
         {
-            lock (CacheLock)
-            {
-                SetCache(_context.Authors.OrderBy(o => o.FirstName).AsNoTracking().ToList(), Timer);
-            }
+            return (this as ICache<Author>).GetCache(_context, Timer);
         }
-
-        public List<Author> GetCache(int Timer = 600)
-        {
-            List<Author> List = new List<Author>();
-            lock (CacheLock)
-            {
-                if (!_cache.TryGetValue(CacheName, out List))
-                {
-                    List = _context.Authors.OrderBy(o => o.LastName).ToList();
-                    SetCache(List, Timer);
-                }
-            }
-            return List;
-        }
-
-        private void SetCache(List<Author> List, int Timer = 600)
-        {
-            _cache.Set(CacheName, List, new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer + 60)
-            });
-            _cache.Set(CacheNameTimer, DateTime.Now.AddSeconds(Timer), new MemoryCacheEntryOptions()
-            {
-                AbsoluteExpiration = DateTime.Now.AddSeconds(Timer)
-            });
-        }
-        #endregion
     }
 }
