@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SMI.MediatR
 {
-    public class AggregatorHandler : AsyncRequestHandler<AggregatorRequest>
+    public class AggregatorHandler : IRequestHandler<AggregatorRequest>
     {
         private readonly SmiContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -22,7 +22,7 @@ namespace SMI.MediatR
             _webHostEnvironment = webHostEnvironment;
         }
 
-        protected override async Task Handle(AggregatorRequest request, CancellationToken cancellationToken)
+        public async Task Handle(AggregatorRequest request, CancellationToken cancellationToken)
         {
             /*
             IConfiguration config = Configuration.Default;
@@ -116,6 +116,8 @@ namespace SMI.MediatR
             _context.News.Add(news);
 
             await _context.SaveChangesAsync();
+
+            //return Task.CompletedTask;
         }
     }
 }

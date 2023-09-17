@@ -12,7 +12,7 @@ using System.IO;
 
 namespace SMI.MediatR
 {
-    public class SiteMapHandler : AsyncRequestHandler<SiteMapRequest>
+    public class SiteMapHandler : IRequestHandler<SiteMapRequest>
     {
         private readonly SmiContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -21,7 +21,7 @@ namespace SMI.MediatR
             _webHostEnvironment = webHostEnvironment;
         }
 
-        protected override Task Handle(SiteMapRequest request, CancellationToken cancellationToken)
+        public Task Handle(SiteMapRequest request, CancellationToken cancellationToken)
         {
             string returnTo = "";
 

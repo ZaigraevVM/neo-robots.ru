@@ -16,7 +16,8 @@ namespace SMI.Code.Extensions
         {
             services.AddAuthentication().AddCookie();
             services.AddSingleton(Log.Logger);
-            services.AddMediatR(typeof(Startup));
+            //services.AddMediatR(typeof(Startup));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Startup>());
             services.AddScoped<IViewRender, ViewRender>();
             services.AddSingleton<ICronManager, CronManager>();
             services.AddAutoMapper(typeof(MappingProfiles));

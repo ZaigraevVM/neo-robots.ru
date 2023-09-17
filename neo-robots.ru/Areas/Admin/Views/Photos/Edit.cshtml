@@ -259,6 +259,7 @@
                     type: 'post',
                     success: function (d) {
                         $("#" + d.type + "image").attr('src', d.path);
+                        $(`#${t}Modal`).modal('hide');
                     }
                 });
 
