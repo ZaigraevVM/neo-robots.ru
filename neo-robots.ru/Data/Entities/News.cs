@@ -29,10 +29,10 @@ namespace SMI.Data.Entities
         public virtual Newspaper Newspapers { get; set; }
         public virtual Photo Photo { get; set; }
         public virtual AggregatorNews AggregatorNews { get; set; }
-        public virtual ICollection<HashTagsNews> HashTagsNews { get; set; }
-        public virtual ICollection<NewsCities> NewsCities { get; set; }
-        public virtual ICollection<NewsRegion> NewsRegions { get; set; }
-        public virtual ICollection<NewsTheme> NewsThemes { get; set; }
+        public virtual ICollection<HashTagsNews> HashTagsNews { get; set; } = new List<HashTagsNews>();
+        public virtual ICollection<NewsCities> NewsCities { get; set; } = new List<NewsCities>();
+        public virtual ICollection<NewsRegion> NewsRegions { get; set; } = new List<NewsRegion>();
+        public virtual ICollection<NewsTheme> NewsThemes { get; set; } = new List<NewsTheme>();
 
         public string GetPhotoFile()
         {

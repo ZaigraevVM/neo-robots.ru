@@ -129,7 +129,7 @@ namespace SMI.Managers
             news.Date = m.Date;
             news.Intro = m.Intro;
             news.Text = m.Text;
-            news.PhotoId = m.PhotoId;
+            news.PhotoId = m.PhotoId > 0 ? m.PhotoId : null;
             news.Path = m.Path;
             news.IsPublish = m.IsPublish;
             news.AuthorId = m.AuthorId == 0 ? null : m.AuthorId;
