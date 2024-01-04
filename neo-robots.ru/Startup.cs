@@ -34,7 +34,7 @@ namespace SMI
                 .AddEntityFrameworkStores<SmiContext>();
             
             services.Configure<SettingsOption>(Configuration.GetSection("Settings"));
-
+            services.AddHttpClient();
             services.DI();
 
             services.AddControllersWithViews();
@@ -42,7 +42,7 @@ namespace SMI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env /*, ICronManager cron*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, ICronManager cron*/)
         {
             if (env.IsDevelopment())
             {

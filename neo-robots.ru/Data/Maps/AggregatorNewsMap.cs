@@ -21,6 +21,14 @@ namespace SMI.Data.Maps
                 .WithMany(n=>n.AggregatorNewsList)
                 .HasForeignKey(d => d.AggregatorSourceId)
                 .HasConstraintName("FK_AggregatorNews_AggregatorSourceId");
+
+            /*
+            builder.HasOne(d => d.AggregatorPage)
+                .WithMany()
+                .HasForeignKey(d => d.AggregatorPageId)
+                .HasConstraintName("FK_AggregatorNews_AggregatorPageId")
+                .OnDelete(DeleteBehavior.ClientCascade);
+            */
         }
     }
 }

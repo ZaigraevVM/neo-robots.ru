@@ -73,6 +73,7 @@ namespace SMI.Managers
             item.AggregatorSourceId = m.AggregatorSourceId;
             item.LinkHtmlPath = m.LinkHtmlPath;
             item.Type = m.Type;
+            item.IsActive = m.IsActive;
 
             _context.Update(item);
             await _context.SaveChangesAsync();

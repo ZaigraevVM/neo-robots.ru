@@ -35,7 +35,8 @@ namespace SMI.Areas.Admin.Models
         public string LinkHtmlPath { get; set; }
 
         public int AggregatorSourceId { get; set; }
-
+        [Display(Name = "Активен")]
+        public bool IsActive { get; set; }
         public AggregatorListType Type { get; set; }
         public string History { get; set; }
     }

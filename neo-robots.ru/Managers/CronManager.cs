@@ -13,22 +13,41 @@ namespace SMI.Managers
     public class CronManager : ICronManager
     {
         private readonly ILogger<CronManager> _logger;
-        private readonly Timer _timer;
+        private readonly Timer _timerNews;
+        private readonly Timer _timerNewsList;
         private readonly IServiceProvider _provider;
         public CronManager(ILogger<CronManager> logger, IServiceProvider provider)
         {
             _logger = logger;
             _provider = provider;
-            _timer = new Timer(i => this.Run(), null, new TimeSpan(1), TimeSpan.FromHours(1));
+            _timerNews = new Timer(i => RunImportNews(), null, new TimeSpan(1), TimeSpan.FromHours(1));
+            //_timerNewsList = new Timer(i => RunImportNewsList(), null, new TimeSpan(1), TimeSpan.FromHours(12));
+            _timerNewsList = new Timer(i => RunImportNewsList(), null, new TimeSpan(1), TimeSpan.FromSeconds(12));
         }
 
-        private void Run()
+        private void RunImportNews()
         {
             try
             {
                 using (var scope = _provider.CreateScope())
                 {
                     Action<IServiceProvider> action = provider => provider.GetService<IAggregatorManager>().ImportNewsAsync();
+                    action(scope.ServiceProvider);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error cron", ex);
+            }
+        }
+
+        private void RunImportNewsList()
+        {
+            try
+            {
+                using (var scope = _provider.CreateScope())
+                {
+                    Action<IServiceProvider> action = provider => provider.GetService<IAggregatorManager>().ImportNewsListAsync();
                     action(scope.ServiceProvider);
                 }
             }

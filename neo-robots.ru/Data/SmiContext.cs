@@ -1,14 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using SMI.Data.Entities.Properties;
 using SMI.Data.Maps;
+using System;
+using System.Linq;
 
 #nullable disable
 
@@ -26,7 +22,7 @@ namespace SMI.Data.Entities
         public SmiContext(DbContextOptions<SmiContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
-            Database.Migrate();
+            //Database.Migrate();
             _httpContextAccessor = httpContextAccessor;
             SavingChanges += Auditable_SavingChanges;
             SavingChanges += History_SavingChanges;
@@ -49,6 +45,7 @@ namespace SMI.Data.Entities
         public virtual DbSet<AggregatorNews> AggregatorNews { get; set; }
         public virtual DbSet<AggregatorList> AggregatorLists { get; set; }
         public virtual DbSet<AggregatorPage> AggregatorPages { get; set; }
+        public virtual DbSet<AggregatorDownload> AggregatorDownloads { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -65,6 +62,7 @@ namespace SMI.Data.Entities
 
             modelBuilder.HasAnnotation("Relational:Collation", "Cyrillic_General_CI_AS");
 
+            modelBuilder.ApplyConfiguration(new AggregatorDownloadMap());
             modelBuilder.ApplyConfiguration(new AggregatorNewsMap());
             modelBuilder.ApplyConfiguration(new AggregatorListMap());
             modelBuilder.ApplyConfiguration(new AggregatorPageMap());

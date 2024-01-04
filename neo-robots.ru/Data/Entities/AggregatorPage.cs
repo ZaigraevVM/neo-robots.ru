@@ -22,6 +22,7 @@ namespace SMI.Data.Entities
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public int AggregatorSourceId { get; set; }
+        public bool IsActive { get; set; }
         public virtual AggregatorSource AggregatorSource { get; set; }
     }
 }

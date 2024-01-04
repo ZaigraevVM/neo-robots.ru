@@ -41,3 +41,7 @@ a {
 .table > :not(:first-child) {
     border-top: none;
 }
+
+.active_False {
+    color: #666;
+}

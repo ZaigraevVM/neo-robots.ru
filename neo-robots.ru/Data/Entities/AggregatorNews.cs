@@ -13,12 +13,14 @@ namespace SMI.Data.Entities
         public string ImageUrl { get; set; }
         public string Html { get; set; }
         public int AggregatorSourceId { get; set; }
+        //public int AggregatorPageId { get; set; }
         public string History { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public virtual AggregatorSource AggregatorSource { get; set; }
+        //public virtual AggregatorPage AggregatorPage { get; set; }
         public virtual News News { get; set; }
     }
 }

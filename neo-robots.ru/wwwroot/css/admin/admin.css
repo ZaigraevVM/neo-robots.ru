@@ -45,3 +45,7 @@ textarea {
 .input-validation-error {
     border: 1px solid red;
 }
+
+.active_False {
+    color: #666;
+}

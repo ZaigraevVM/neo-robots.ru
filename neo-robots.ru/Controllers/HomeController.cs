@@ -26,7 +26,7 @@ namespace SMI.Controllers
 
         public async Task<IActionResult> Index(HomePage m)
         {
-            await _aggregator.ImportNewsAsync();
+            await _aggregator.ImportNewsListAsync();
             m = _newsMgr.GetHomePage(m);
             return View(m);
         }

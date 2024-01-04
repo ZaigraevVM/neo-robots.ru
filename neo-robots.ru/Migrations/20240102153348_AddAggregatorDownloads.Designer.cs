@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SMI.Data.Entities;
 
@@ -11,9 +12,11 @@ using SMI.Data.Entities;
 namespace SMI.Migrations
 {
     [DbContext(typeof(SmiContext))]
-    partial class SmiContextModelSnapshot : ModelSnapshot
+    [Migration("20240102153348_AddAggregatorDownloads")]
+    partial class AddAggregatorDownloads
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,14 +248,8 @@ namespace SMI.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Error")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("History")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsError")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -275,7 +272,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("AggregatorPageId");
 
-                    b.ToTable("AggregatorDownloads", (string)null);
+                    b.ToTable("AggregatorDownloads");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.AggregatorList", b =>
@@ -297,9 +294,6 @@ namespace SMI.Migrations
 
                     b.Property<string>("History")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LinkHtmlPath")
                         .HasColumnType("nvarchar(max)");
@@ -329,7 +323,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("AggregatorSourceId");
 
-                    b.ToTable("AggregatorLists", (string)null);
+                    b.ToTable("AggregatorLists");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.AggregatorNews", b =>
@@ -380,7 +374,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("AggregatorSourceId");
 
-                    b.ToTable("AggregatorNews", (string)null);
+                    b.ToTable("AggregatorNews");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.AggregatorPage", b =>
@@ -408,9 +402,6 @@ namespace SMI.Migrations
 
                     b.Property<string>("ImageHtmlPath")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
@@ -443,7 +434,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("AggregatorSourceId");
 
-                    b.ToTable("AggregatorPages", (string)null);
+                    b.ToTable("AggregatorPages");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.AggregatorSource", b =>
@@ -477,7 +468,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AggregatorSources", (string)null);
+                    b.ToTable("AggregatorSources");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.Author", b =>
@@ -515,7 +506,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.City", b =>
@@ -554,7 +545,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("Cities", (string)null);
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.HashTag", b =>
@@ -587,7 +578,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HashTags", (string)null);
+                    b.ToTable("HashTags");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.HashTagsNews", b =>
@@ -602,7 +593,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("NewsId");
 
-                    b.ToTable("HashTagsNews", (string)null);
+                    b.ToTable("HashTagsNews");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.HashTagsTheme", b =>
@@ -617,7 +608,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("HashTagsThemes", (string)null);
+                    b.ToTable("HashTagsThemes");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.News", b =>
@@ -692,7 +683,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("PhotoId");
 
-                    b.ToTable("News", (string)null);
+                    b.ToTable("News");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.NewsCities", b =>
@@ -707,7 +698,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("NewsCities", (string)null);
+                    b.ToTable("NewsCities");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.NewsRegion", b =>
@@ -722,7 +713,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("NewsRegions", (string)null);
+                    b.ToTable("NewsRegions");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.NewsTheme", b =>
@@ -737,7 +728,7 @@ namespace SMI.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("NewsThemes", (string)null);
+                    b.ToTable("NewsThemes");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.Newspaper", b =>
@@ -769,7 +760,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Newspapers", (string)null);
+                    b.ToTable("Newspapers");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.Photo", b =>
@@ -809,7 +800,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Photos", (string)null);
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.Region", b =>
@@ -842,7 +833,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Regions", (string)null);
+                    b.ToTable("Regions");
                 });
 
             modelBuilder.Entity("SMI.Data.Entities.Theme", b =>
@@ -877,7 +868,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Themes", (string)null);
+                    b.ToTable("Themes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
