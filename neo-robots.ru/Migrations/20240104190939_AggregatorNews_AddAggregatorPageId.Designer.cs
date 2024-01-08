@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SMI.Data.Entities;
 
@@ -11,9 +12,11 @@ using SMI.Data.Entities;
 namespace SMI.Migrations
 {
     [DbContext(typeof(SmiContext))]
-    partial class SmiContextModelSnapshot : ModelSnapshot
+    [Migration("20240104190939_AggregatorNews_AddAggregatorPageId")]
+    partial class AggregatorNews_AddAggregatorPageId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -340,7 +343,7 @@ namespace SMI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AggregatorDownloadId")
+                    b.Property<int>("AggregatorPageId")
                         .HasColumnType("int");
 
                     b.Property<int>("AggregatorSourceId")
@@ -381,7 +384,7 @@ namespace SMI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AggregatorDownloadId");
+                    b.HasIndex("AggregatorPageId");
 
                     b.HasIndex("AggregatorSourceId");
 
@@ -964,12 +967,12 @@ namespace SMI.Migrations
 
             modelBuilder.Entity("SMI.Data.Entities.AggregatorNews", b =>
                 {
-                    b.HasOne("SMI.Data.Entities.AggregatorDownload", "AggregatorDownload")
+                    b.HasOne("SMI.Data.Entities.AggregatorPage", "AggregatorPage")
                         .WithMany()
-                        .HasForeignKey("AggregatorDownloadId")
+                        .HasForeignKey("AggregatorPageId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired()
-                        .HasConstraintName("FK_AggregatorNews_AggregatorDownloadId");
+                        .HasConstraintName("FK_AggregatorNews_AggregatorPageId");
 
                     b.HasOne("SMI.Data.Entities.AggregatorSource", "AggregatorSource")
                         .WithMany("AggregatorNewsList")
@@ -978,7 +981,7 @@ namespace SMI.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_AggregatorNews_AggregatorSourceId");
 
-                    b.Navigation("AggregatorDownload");
+                    b.Navigation("AggregatorPage");
 
                     b.Navigation("AggregatorSource");
                 });

@@ -22,7 +22,7 @@ namespace SMI.Data.Entities
         public SmiContext(DbContextOptions<SmiContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
-            //Database.Migrate();
+            Database.Migrate();
             _httpContextAccessor = httpContextAccessor;
             SavingChanges += Auditable_SavingChanges;
             SavingChanges += History_SavingChanges;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SMI.Data.Entities;
 
@@ -11,9 +12,11 @@ using SMI.Data.Entities;
 namespace SMI.Migrations
 {
     [DbContext(typeof(SmiContext))]
-    partial class SmiContextModelSnapshot : ModelSnapshot
+    [Migration("20240108003302_AggregatorNews_AddAggregatorDownloadId")]
+    partial class AggregatorNews_AddAggregatorDownloadId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
